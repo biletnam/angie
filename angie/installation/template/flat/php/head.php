@@ -28,6 +28,9 @@ if(!empty($scripts)) foreach($scripts as $url => $params)
 <script type="text/javascript" src="template/flat/js/menu.min.js"></script>
 <script type="text/javascript" src="template/flat/js/tabs.min.js"></script>
 <script type="text/javascript" src="template/flat/js/dropdown.min.js"></script>
+<script type="text/javascript" src="template/flat/js/system.js"></script>
+<script type="text/javascript" src="template/flat/js/tooltip.js"></script>
+<script type="text/javascript" src="template/flat/js/modal.js"></script>
 <?php
 // Scripts after the template ones
 if(!empty($scripts)) foreach($scripts as $url => $params)
