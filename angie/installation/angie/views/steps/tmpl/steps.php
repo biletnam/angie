@@ -18,7 +18,6 @@ $i = 0;
 
 <?php if ((isset($helpurl) && !empty($helpurl)) || (isset($videourl) && !empty($videourl))): ?>
 <div class="alert alert-info">
-	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<?php if (isset($helpurl) && !empty($helpurl)): ?>
 	<?php echo AText::_('GENERIC_LBL_WHATTODONEXT'); ?>
 	<a href="<?php echo $helpurl ?>" class="btn btn-info btn-small" target="_blank">

@@ -8,8 +8,7 @@
 
 defined('_AKEEBA') or die();
 ?>
-<div class="alert">
-	<button type="button" class="close" data-dismiss="alert">&times;</button>
+<div class="akeeba-block--warning">
 	<?php echo AText::_('SESSION_LBL_MAINMESSAGE'); ?>
 </div>
 

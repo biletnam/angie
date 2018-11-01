@@ -15,7 +15,6 @@ foreach(array('error','warning','success','info') as $type):
 ?>
 <div class="alert <?php echo $class ?>">
 <?php foreach($messages as $message):?>
-	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<p><?php echo $message ?></p>
 <?php endforeach; ?>
 </div>

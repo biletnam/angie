@@ -16,7 +16,6 @@ echo $this->loadAnyTemplate('steps/steps', array(
 
 <?php if (!$this->reqMet): ?>
 <div class="alert alert-error">
-	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<?php echo AText::_('MAIN_LBL_REQUIREDREDTEXT'); ?>
 </div>
 <?php endif; ?>
