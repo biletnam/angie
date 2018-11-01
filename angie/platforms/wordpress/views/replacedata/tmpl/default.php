@@ -8,7 +8,7 @@
 
 defined('_AKEEBA') or die();
 
-/** @var $this AView */
+/** @var $this AngieViewReplacedata */
 
 $document = $this->container->application->getDocument();
 
@@ -92,7 +92,7 @@ $document->addScriptDeclaration($js);
 	<div class="span4">
 		<select multiple size="10" id="extraTables">
 <?php if (!empty($this->otherTables)) foreach ($this->otherTables as $table): ?>
-			<option value="<?php echo $this->escape($table) ?>" <?php echo (substr($table, 0, 3) == '#__') ? 'selected="selected"' : '' ?>><?php echo $this->escape($table) ?></option>
+			<option value="<?php echo $this->escape($table) ?>" <?php echo (substr($table, 0, $this->prefixLen) == $this->prefix) ? 'selected="selected"' : '' ?>><?php echo $this->escape($table) ?></option>
 <?php endforeach; ?>
 		</select>
 	</div>
@@ -102,12 +102,14 @@ $document->addScriptDeclaration($js);
 		<div id="replaceThrottle" style="display: none;">
 			<h4><?php echo AText::_('SETUP_ADVANCE_OPTIONS')?></h4>
 
+            <!--
             <div class="control-group">
                 <label class="control-label"><?php echo AText::_('SETUP_REPLACE_DATA_COLUMNSIZE')?></label>
                 <div class="controls">
                     <input type="text" id="column_size" name="column_size" class="input-small" value="1048576" />
                 </div>
             </div>
+            -->
 			<div class="control-group">
 				<label class="control-label"><?php echo AText::_('SETUP_REPLACE_DATA_BATCHSIZE')?></label>
 				<div class="controls">
