@@ -1402,3 +1402,33 @@ akeeba.System.toggleClass = function (element, aClass)
 
 	akeeba.System.addClass(element, aClass);
 };
+
+/**
+ * Checks if a varriable is empty. From the php.js library.
+ */
+function empty(mixed_var)
+{
+    var key;
+
+    if (mixed_var === "" ||
+        mixed_var === 0 ||
+        mixed_var === "0" ||
+        mixed_var === null ||
+        mixed_var === false ||
+        typeof mixed_var === 'undefined'
+    )
+    {
+        return true;
+    }
+
+    if (typeof mixed_var == 'object')
+    {
+        for (key in mixed_var)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    return false;
+}
