@@ -104,41 +104,41 @@ defined('_AKEEBA') or die();
 </div>
 
 <script type="text/javascript">
-function openFTPBrowser()
-{
-	var hostname = $('#hostname').val();
-	var port = $('#port').val();
-	var username = $('#username').val();
-	var password = $('#password').val();
-	var directory = $('#directory').val();
+    function openFTPBrowser()
+    {
+        var hostname  = document.getElementById('hostname').value;
+        var port      = document.getElementById('port').value;
+        var username  = document.getElementById('username').value;
+        var password  = document.getElementById('password').value;
+        var directory = document.getElementById('directory').value;
 
-	if ((port <= 0) || (port >= 65536))
-	{
-		port = 21;
-	}
+        if ((port <= 0) || (port >= 65536))
+        {
+            port = 21;
+        }
 
-	var url = 'index.php?view=ftpbrowser&tmpl=component'
-		+ '&hostname=' + encodeURIComponent(hostname)
-		+ '&port=' + encodeURIComponent(port)
-		+ '&username=' + encodeURIComponent(username)
-		+ '&password=' + encodeURIComponent(password)
-		+ '&directory=' + encodeURIComponent(directory);
+        var url = 'index.php?view=ftpbrowser&tmpl=component'
+            + '&hostname=' + encodeURIComponent(hostname)
+            + '&port=' + encodeURIComponent(port)
+            + '&username=' + encodeURIComponent(username)
+            + '&password=' + encodeURIComponent(password)
+            + '&directory=' + encodeURIComponent(directory);
 
-    document.getElementById('browseFrame').src = url;
+        document.getElementById('browseFrame').src = url;
 
-    akeeba.System.data.set(document.getElementById('browseModal'), 'modal', akeeba.Modal.open({
-        inherit: '#browseModal',
-        width: '80%'
-    }));
+        akeeba.System.data.set(document.getElementById('browseModal'), 'modal', akeeba.Modal.open({
+            inherit: '#browseModal',
+            width:   '80%'
+        }));
 
-	return false;
-}
+        return false;
+    }
 
-function useFTPDirectory(path)
-{
-	$('#directory').val(path);
+    function useFTPDirectory(path)
+    {
+		document.getElementById('directory').value = path;
 
-	akeeba.System.data.get(document.getElementById('browseModal'), 'modal').close();
-}
+        akeeba.System.data.get(document.getElementById('browseModal'), 'modal').close();
+    }
 </script>
 <?php endif; ?>

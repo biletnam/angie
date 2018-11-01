@@ -26,12 +26,16 @@ else
 
 $url = 'index.php';
 
-$document->addScriptDeclaration(<<<ENDSRIPT
+$document->addScriptDeclaration(<<<JS
+
 var akeebaAjax = null;
-$(document).ready(function(){
+
+akeeba.System.documentReady(function ()
+{
 	akeebaAjax = new akeebaAjaxConnector('$url');
 });
-ENDSRIPT
+JS
+
 );
 
 $document->appendButton(
