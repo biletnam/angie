@@ -1,3 +1,6 @@
+/**
+ * Page footer
+ */
 /* Set the fixed height of the footer here */
 #akeeba-footer {
     background-color: #EFEFEF;
@@ -18,6 +21,29 @@ ol.bigger li {
     font-size: 12pt !important;
     line-height: 220%;
     margin-top: 0.3em;
+}
+
+/**
+ * Breadcrumbs
+ */
+ul.breadcrumb {
+    padding: 0.5em 1em;
+    list-style: none;
+    background-color: #EFEFEF;
+}
+
+ul.breadcrumb li {
+    display: inline;
+    font-size: 11pt;
+}
+
+ul.breadcrumb li.active {
+    font-weight: bold;
+    color: #40B5B8;
+}
+
+ul.breadcrumb span.divider {
+    color: #6b686a;
 }
 
 /**

@@ -32,7 +32,7 @@ defined('_AKEEBA') or die();
                         <span class="akeeba-label--red--small">v.<?php echo AKEEBA_VERSION ?></span>
                     </span>
                 </a>
-                <a href="#" class="akeeba-menu-button akeeba-hidden-desktop akeeba-hidden-tablet"
+                <a href="#" class="akeeba-menu-button akeeba-hidden-desktop akeeba-hidden-tablet" id="mobileMenuToggler"
                    title="<?php echo AText::_('ANGIE_COMMON_MSG_TOGGLE_NAV') ?>">
                     <span class="akion-navicon-round"></span>
                 </a>

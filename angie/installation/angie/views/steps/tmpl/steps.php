@@ -17,17 +17,17 @@ $i = 0;
 ?>
 
 <?php if ((isset($helpurl) && !empty($helpurl)) || (isset($videourl) && !empty($videourl))): ?>
-<div class="alert alert-info">
+<div class="akeeba-block--info">
 	<?php if (isset($helpurl) && !empty($helpurl)): ?>
 	<?php echo AText::_('GENERIC_LBL_WHATTODONEXT'); ?>
-	<a href="<?php echo $helpurl ?>" class="btn btn-info btn-small" target="_blank">
-		<span class="icon-white icon-book"></span>
+	<a href="<?php echo $helpurl ?>" class="akeeba-btn--teal--small" target="_blank">
+		<span class="akion-ios-book"></span>
 		<?php echo AText::_('GENERIC_BTN_RTFM'); ?>
 	</a>
 	<?php endif; ?>
 	<?php if (isset($videourl) && !empty($videourl)): ?>
-	<a href="<?php echo $videourl ?>" class="btn btn-inverse btn-small" target="_blank">
-		<span class="icon-white icon-facetime-video"></span>
+	<a href="<?php echo $videourl ?>" class="akeeba-btn--dark--small" target="_blank">
+		<span class="akion-videocamera"></span>
 		<?php echo AText::_('GENERIC_BTN_VIDEO'); ?>
 	</a>
 	<?php endif; ?>
@@ -39,7 +39,7 @@ $i = 0;
   <li <?php echo $crumb['active'] ? 'class="active"' : '' ?>>
 	  <?php echo AText::_('GENERIC_CRUMB_' . $crumb['name']) ?>
 	  <?php if((($crumb['substeps'] - $crumb['active_substep']) > 0) && $found_active): ?>
-	  <span class="label label-important">
+	  <span class="akeeba-label--red">
 		  <?php if ($crumb['active']): ?>
 		  <?php echo $crumb['substeps'] - $crumb['active_substep'] ?>
 		  <?php else: ?>
@@ -48,7 +48,7 @@ $i = 0;
 	  </span>
 	  <?php endif; ?>
 	  <?php if($i < count($crumbs)): ?>
-	  <span class="divider icon-chevron-right"></span>
+	  <span class="divider akion-chevron-right"></span>
 	  <?php endif; ?>
   </li>
 <?php endforeach; ?>

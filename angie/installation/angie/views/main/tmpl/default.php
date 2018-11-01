@@ -14,7 +14,15 @@ $document = $this->container->application->getDocument();
 
 $document->addScript('angie/js/json.js');
 $document->addScript('angie/js/ajax.js');
-$document->addScript('platform/js/main.js');
+
+if (file_exists(APATH_INSTALLATION . '/platform/js/main.js'))
+{
+	$document->addScript('platform/js/main.js');
+}
+else
+{
+	$document->addScript('angie/js/main.js');
+}
 
 $url = 'index.php';
 

@@ -21,11 +21,11 @@ if(!empty($buttons)) foreach($buttons as $button):
 		$link = 'href="#" onclick="' . htmlentities($button['onclick'], ENT_COMPAT, 'UTF-8') . '"';
 	}
 
-	$class = "akeeba-btn--small";
+	$class = "akeeba-btn";
 
 	if (!empty($button['types'])) foreach($button['types'] as $type)
 	{
-		$class .= " --$type";
+		$class .= "--$type";
 	}
 
 	$iconClass = "";

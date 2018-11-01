@@ -14,8 +14,53 @@ akeeba.System.documentReady(function ()
     document.getElementById('mobileMenuToggler').setAttribute('disabled', 'disabled');
 
     // Start the AJAX calls in a way which doesn't make some older browsers choke
-    setTimeout(mainGetPage, 500);
+    setTimeout(mainStart, 500);
 });
+
+/**
+ * Ask the server to detect the installed version of the script/CMS we are restoring.
+ */
+function mainStart() {
+    request_data = {
+        'view': 'main',
+        'task': 'detectversion',
+        'format': 'json'
+    };
+    akeebaAjax.callJSON(request_data, mainGotVersion, mainGotVersion);
+}
+
+/**
+ * Handler for receiving information about the installed script/CMS version. Also starts the next AJAX query, loading
+ * the script/CMS configuration information to the session.
+ *
+ * @param data
+ * @param textStatus
+ * @param errorThrown
+ */
+function mainGotVersion(data, textStatus, errorThrown) {
+    setTimeout(mainGetConfig, 1000);
+}
+
+/**
+ * Ask the server to make an attempt at reading the installed script/CMS configuration and stash it to the session.
+ */
+function mainGetConfig() {
+    request_data = {
+        'view': 'main',
+        'task': 'getconfig',
+        'format': 'json'
+    };
+    akeebaAjax.callJSON(request_data, mainGotConfig, mainGotConfig);
+}
+
+/**
+ * The server finished loading the configuration information. Proceed to getting the main page content.
+ *
+ * @param data
+ */
+function mainGotConfig(data) {
+    setTimeout(mainGetPage, 1000);
+}
 
 /**
  * Ask the server to render and send the main page area content.
