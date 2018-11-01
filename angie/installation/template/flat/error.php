@@ -11,41 +11,58 @@ defined('_AKEEBA') or die();
 ?>
 <html>
 <head>
-	<title>ANGIE - Akeeba Next Generation Installation Engine v. <?php echo AKEEBA_VERSION ?></title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script type="text/javascript" src="template/angie/js/jquery.js"></script>
-	<script type="text/javascript" src="template/angie/js/jquery.simulate.js"></script>
-	<script type="text/javascript" src="template/angie/js/bootstrap.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="template/angie/css/bootstrap.min.css" />
-	<link rel="stylesheet" type="text/css" href="template/angie/css/bootstrap-responsive.min.css" />
-	<link rel="stylesheet" type="text/css" href="template/angie/css/footer.css" />
+    <title>ANGIE - Akeeba Next Generation Installation Engine v. <?php echo AKEEBA_VERSION ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="template/flat/css/fef.min.css"/>
+    <link rel="stylesheet" type="text/css" href="template/flat/css/theme.css"/>
 </head>
-<body>
-	<div id="wrap">
-		<div class="navbar navbar-inverse navbar-static-top">
-			<div class="navbar-inner">
-				<div class="container">
-					<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="brand" href="#">ANGIE – Akeeba Next Generation Installer Engine v.<?php echo AKEEBA_VERSION ?></a>
-				</div>
-			</div>
-		</div>
-		<div class="container">
-			<?php echo $error_message ?>
-		</div>
-		<div id="footer">
-			<div class="container">
-				<p class="muted credit">
-					Copyright &copy;2006 &ndash; <?php echo date('Y') ?> Akeeba Ltd. All rights reserved.<br/>
-					ANGIE is Free Software distributed under the
-					<a href="http://www.gnu.org/licenses/gpl.html">GNU GPL version 3</a> or any later version published by the FSF.
-				</p>
-			</div>
-		</div>
-	</div>
+<body class="akeeba-renderer-fef">
+<!--[if IE]><div class="ie9"><![endif]-->
+
+<header class="akeeba-navbar">
+    <div class="akeeba-maxwidth akeeba-flex">
+        <!-- Branding -->
+        <div class="akeeba-nav-logo">
+            <a href="#">
+                <span class="aklogo-deluxe-j"></span>
+                <span class="akeeba-product-name">
+                        Akeeba Backup Site Restoration Script
+                        <span class="akeeba-label--red--small">v.<?php echo AKEEBA_VERSION ?></span>
+                    </span>
+            </a>
+            <a href="#" class="akeeba-menu-button akeeba-hidden-desktop akeeba-hidden-tablet"
+               title="Toggle Navigation"></a>
+        </div>
+
+        <!-- Navigation -->
+        <nav>
+        </nav>
+    </div>
+</header>
+<div class="akeeba-maxwidth">
+
+    <?php echo $error_message ?>
+
+</div>
+<footer id="akeeba-footer">
+    <div class="akeeba-maxwidth">
+        <div class="akeeba-container--75-25">
+            <div>
+                <p class="credit">
+                    Copyright &copy;2006 &ndash; <?php echo date('Y') ?> Akeeba Ltd. All rights reserved.<br/>
+                    ANGIE is Free Software distributed under the
+                    <a href="http://www.gnu.org/licenses/gpl.html">GNU GPL version 3</a> or any later version published by the FSF.
+                </p>
+            </div>
+            <div style="text-align: right">
+                <a href="https://www.akeeba.com" rel="nofollow" target="_blank" style="color: #cdcdcd">
+                    <span class="aklogo-company-logo md"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!--[if IE]></div><![endif]-->
 </body>
 </html>
