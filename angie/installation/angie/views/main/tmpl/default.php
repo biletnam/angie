@@ -27,10 +27,10 @@ ENDSRIPT
 );
 
 $document->appendButton(
-	'GENERIC_BTN_STARTOVER', 'index.php?view=main&task=startover', 'danger', 'white fire'
+	'GENERIC_BTN_STARTOVER', 'index.php?view=main&task=startover', 'red', 'fireball'
 );
 $document->appendButton(
-	'GENERIC_BTN_RECHECK', 'javascript:mainGetPage();', 'warning', 'white retweet'
+	'GENERIC_BTN_RECHECK', 'javascript:mainGetPage();', 'orange', 'loop'
 );
 
 echo $this->loadAnyTemplate('steps/buttons');
