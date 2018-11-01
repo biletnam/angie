@@ -15,35 +15,12 @@ var databaseLogFile = '';
 /**
  * Initialisation of the page
  */
-$(document).ready(function(){
+akeeba.System.documentReady(function ()
+{
 	// Enable tooltips
-	$('.help-tooltip').tooltip();
-
-	// Existing tables switch handler
-	var existing = $('#existing').val();
-	$('#existing-' + existing).button('toggle');
-	if(existing == 'drop') {
-		$('#existing-drop').addClass('btn-danger');
-	} else {
-		$('#existing-backup').addClass('btn-success');
-	}
-
-	$('#existing-drop').click(function(e){
-		$('#existing').val('drop');
-		$('#existing-backup').button('toggle');
-		$('#existing-drop').button('toggle');
-		$('#existing-drop').addClass('btn-danger');
-		$('#existing-backup').removeClass('btn-success');
-	});
-	$('#existing-backup').click(function(e){
-		$('#existing').val('backup');
-		$('#existing-backup').button('toggle');
-		$('#existing-drop').button('toggle');
-		$('#existing-backup').addClass('btn-success');
-		$('#existing-drop').removeClass('btn-danger');
-	});
-
+	akeeba.Tooltip.enableFor(document.querySelectorAll('.help-tooltip'), false);
 });
+
 
 /**
  * Begins the database restoration using the filled-in form data
