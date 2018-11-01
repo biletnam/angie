@@ -14,14 +14,14 @@ define('_AKEEBA', 1);
 define('_JEXEC', 1);
 
 $minPHP         = '5.4.0';
-$recommendedPHP = '7.2.0';
+$recommendedPHP = '7.2';
 
 // Sanity check
 if (version_compare(PHP_VERSION, $minPHP, 'lt'))
 {
 	$versionFile  = dirname(__FILE__) . '/version.php';
 	$platformFile = dirname(__FILE__) . '/platform/views/php_version.php';
-	$masterFile   = dirname(__FILE__) . '/template/angie/php_version.php';
+	$masterFile   = dirname(__FILE__) . '/template/flat/php_version.php';
 	$reqFile      = dirname(__FILE__) . '/framework/utils/servertechnology.php';
 
 	@include_once $reqFile;
