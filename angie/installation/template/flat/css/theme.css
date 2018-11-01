@@ -1,0 +1,21 @@
+/* Set the fixed height of the footer here */
+#akeeba-footer {
+    background-color: #EFEFEF;
+    padding: 0.6em 1em 0;
+    margin-top: 0.5em;
+    border-top: 1px solid #cdcdcd;
+}
+
+#akeeba-footer p {
+    margin: 0;
+}
+
+#akeeba-footer p:last-child {
+    margin-bottom: 0;
+}
+
+ol.bigger li {
+    font-size: 12pt !important;
+    line-height: 220%;
+    margin-top: 0.3em;
+}

@@ -21,3 +21,10 @@ link_angie_site_davide.sh
 
 /release/zip/**
 /release/jpa/**
+
+/angie/installation/template/flat/fonts/akeeba
+/angie/installation/template/flat/fonts/Ionicon
+/angie/installation/template/flat/css/fef.min.css
+/angie/installation/template/flat/js/menu.min.js
+/angie/installation/template/flat/js/dropdown.min.js
+/angie/installation/template/flat/js/tabs.min.js

@@ -15,8 +15,16 @@ $symlink_files = [
 	'translations/phpbb/en-GB.ini'      => 'angie/platforms/phpbb/language/en-GB.ini',
 	'translations/prestashop/en-GB.ini' => 'angie/platforms/prestashop/language/en-GB.ini',
 	'translations/wordpress/en-GB.ini'  => 'angie/platforms/wordpress/language/en-GB.ini',
+
+	# FEF
+	'../fef/js/dropdown.min.js'         => 'angie/installation/template/flat/js/dropdown.min.js',
+	'../fef/js/menu.min.js'             => 'angie/installation/template/flat/js/menu.min.js',
+	'../fef/js/tabs.min.js'             => 'angie/installation/template/flat/js/tabs.min.js',
+	'../fef/sa-css/style.min.css'       => 'angie/installation/template/flat/css/fef.min.css',
 ];
 
 $symlink_folders = [
 	'../wpreplace/src/lib' => 'angie/platforms/wordpress/lib',
+	'../fef/fonts/akeeba'  => 'angie/installation/template/flat/fonts/akeeba',
+	'../fef/fonts/Ionicon' => 'angie/installation/template/flat/fonts/Ionicon',
 ];
