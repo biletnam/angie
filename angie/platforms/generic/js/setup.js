@@ -65,17 +65,19 @@ function openFTPBrowser()
 		+ '&password=' + encodeURIComponent(password)
 		+ '&directory=' + encodeURIComponent(directory);
 
-		document.getElementById('browseFrame').src = url;
+	document.getElementById('browseFrame').src = url;
 
-	$('#browseModal').modal({
-		keyboard: false
-	});
+    akeeba.System.data.set(document.getElementById('browseModal'), 'modal', akeeba.Modal.open({
+        inherit: '#browseModal',
+        width: '80%'
+    }));
 }
 
 function useFTPDirectory(path)
 {
 	$('#ftpdir').val(path);
-	$('#browseModal').modal('hide');
+
+    akeeba.System.data.get(document.getElementById('browseModal'), 'modal').close();
 }
 
 function setupOverrideDirectories()

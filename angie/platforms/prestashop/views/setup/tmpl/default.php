@@ -114,19 +114,15 @@ echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeeb
 	</div>
 </form>
 
-<div id="browseModal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="browseModalLabel">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3 id="browseModalLabel"><?php echo AText::_('GENERIC_FTP_BROWSER');?></h3>
-	</div>
-	<div class="modal-body">
-		<iframe id="browseFrame" src="index.php?view=ftpbrowser" width="100%" height="300px"></iframe>
-	</div>
-	<div class="modal-footer">
-		<button class="btn" data-dismiss="modal" aria-hidden="true">
-			<?php echo AText::_('SESSION_BTN_CANCEL') ?>
-		</button>
-	</div>
+<div id="browseModal" class="modal" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="browseModalLabel" style="display: none">
+    <div class="akeeba-renderer-fef">
+        <div class="akeeba-panel--teal">
+            <header class="akeeba-block-header">
+                <h3 id="browseModalLabel"><?php echo AText::_('GENERIC_FTP_BROWSER');?></h3>
+            </header>
+            <iframe id="browseFrame" src="about:blank" width="100%" height="300px"></iframe>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
