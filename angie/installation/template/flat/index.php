@@ -15,6 +15,7 @@ defined('_AKEEBA') or die();
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <?php include __DIR__ . '/php/head.php' ?>
+    <script type="text/javascript">window.addEventListener('DOMContentLoaded', function(event) { akeeba.fef.menuButton(); akeeba.fef.tabs(); });</script>
 </head>
 <body class="akeeba-renderer-fef">
 <!--[if IE]><div class="ie9"><![endif]-->
@@ -32,7 +33,9 @@ defined('_AKEEBA') or die();
                     </span>
                 </a>
                 <a href="#" class="akeeba-menu-button akeeba-hidden-desktop akeeba-hidden-tablet"
-                   title="<?php echo AText::_('ANGIE_COMMON_MSG_TOGGLE_NAV') ?>"></a>
+                   title="<?php echo AText::_('ANGIE_COMMON_MSG_TOGGLE_NAV') ?>">
+                    <span class="akion-navicon-round"></span>
+                </a>
             </div>
 
             <!-- Navigation -->
@@ -42,7 +45,7 @@ defined('_AKEEBA') or die();
         </div>
 	</header>
 
-    <div class="akeeba-maxwidth">
+    <div class="akeeba-maxwidth" id="mainContent">
 <?php endif; ?>
 
 	    <?php include __DIR__ . '/php/messages.php' ?>
