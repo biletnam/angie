@@ -14,6 +14,8 @@ class AngieApplication extends AApplication
 {
 	public function initialise()
 	{
+		$this->setTemplate('flat');
+
 		// Load the version file
 		require_once APATH_INSTALLATION . '/version.php';
 

@@ -15,18 +15,21 @@ $rootBasename = empty($rootBasename) ? 'public_html' : $rootBasename;
 $mySessionId = AApplication::getInstance()->getContainer()->session->getSessionKey();
 ?>
 <div id="angie-session-blocked">
-    <h2><?php echo AText::_('SESSIONBLOCKED_HEADER_IN_USE') ?></h2>
-
-    <div class="alert alert-warning">
-        <p class="small-text">
+    <div class="akeeba-block--warning">
+        <h3><?php echo AText::_('SESSIONBLOCKED_HEADER_IN_USE') ?></h3>
+        <p>
 	        <?php echo AText::_('SESSIONBLOCKED_LBL_IN_USE_TEXT') ?>
         </p>
     </div>
 
-    <h2>
-	    <?php echo AText::_('SESSIONBLOCKED_HEADER_INERROR') ?></h2>
-    <div class="well">
-        <ol>
+    <div class="akeeba-panel--success">
+        <header class="akeeba-block-header">
+            <h2>
+		        <?php echo AText::_('SESSIONBLOCKED_HEADER_INERROR') ?>
+            </h2>
+        </header>
+
+        <ol class="bigger">
             <li><?php echo AText::_('SESSIONBLOCKED_LBL_INSTRUCTIONS_CONNECT') ?></li>
             <li><?php echo AText::sprintf('SESSIONBLOCKED_LBL_INSTRUCTIONS_GOTOROOT', $rootBasename) ?></li>
             <li><?php echo AText::_('SESSIONBLOCKED_LBL_INSTRUCTIONS_GOTOINSTALLER') ?></li>
@@ -38,11 +41,11 @@ $mySessionId = AApplication::getInstance()->getContainer()->session->getSessionK
     </div>
 
     <h4><?php echo AText::_('SESSIONBLOCKED_HEADER_WHY_AM_I_SEEING_THIS') ?></h4>
-    <p class="small-text"><?php echo AText::_('SESSIONBLOCKED_LBL_BECAUSE_SECURITY') ?></p>
-    <p class="small-text"><?php echo AText::_('SESSIONBLOCKED_LBL_BECAUSE_WE_CARE') ?></p>
+    <p><?php echo AText::_('SESSIONBLOCKED_LBL_BECAUSE_SECURITY') ?></p>
+    <p><?php echo AText::_('SESSIONBLOCKED_LBL_BECAUSE_WE_CARE') ?></p>
 
     <?php if (!defined('AKEEBA_PASSHASH')): ?>
     <h4><?php echo AText::_('SESSIONBLOCKED_HEADER_BEST_WAY_TO_AVOID') ?></h4>
-    <p class="small-text"><?php echo AText::_('SESSIONBLOCKED_LBL_BEST_WAY_TO_AVOID') ?></p>
+    <p><?php echo AText::_('SESSIONBLOCKED_LBL_BEST_WAY_TO_AVOID') ?></p>
     <?php endif; ?>
 </div>
