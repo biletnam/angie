@@ -43,15 +43,21 @@ var akeebaAjax = null;
 
 function angieRestoreDefaultDatabaseOptions()
 {
-	// Before setting to an empty string we have to a non-empty string because Chrome is dumb!
-	$('#dbuser').val('IGNORE ME');
-	$('#dbpass').val('IGNORE ME');
+	var elDBUser = document.getElementById('dbuser');
+	var elDBPass = document.getElementById('dbpass');
+	
+	// Chrome auto-fills fields it THINKS are a login form. We need to restore these values. However, we can't just do
+	// that, because if the real value is empty Chrome will simply ignore us. So we have to set them to a dummy value
+	// and then to the real value. Writing web software is easy. Working around all the ways the web is broken is not.
+	elDBUser.value = 'IGNORE ME';
+	elDBPass.value = 'IGNORE ME';
 	// And now the real value, at last
-	$('#dbuser').val('$dbuserEscaped');
-	$('#dbpass').val('$dbpassEscaped');
+	elDBUser.value = '$dbuserEscaped';
+	elDBPass.value = '$dbpassEscaped';
 }
 
-$(document).ready(function(){
+akeeba.System.documentReady(function ()
+{
 	akeebaAjax = new akeebaAjaxConnector('$url');
 
 	databasePasswordMessage = '$dbPassMessage';
@@ -59,6 +65,7 @@ $(document).ready(function(){
 	
 	setTimeout('angieRestoreDefaultDatabaseOptions();', 500);
 });
+
 JS
 );
 
@@ -71,6 +78,12 @@ echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeeb
         <h3><?php echo AText::_('DATABASE_HEADER_DBRESTORE') ?></h3>
 
         <div id="restoration-progress">
+            <div class="akeeba-progress">
+                <div class="akeeba-progress-fill" id="restoration-progress-bar" style="width:20%;"></div>
+                <div class="akeeba-progress-status" id="restoration-progress-bar-text">
+                    20%
+                </div>
+            </div>
             <table width="100%" class="akeeba-table--leftbold--striped">
                 <tbody>
                 <tr>
@@ -117,7 +130,7 @@ echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeeb
             <p>
 			    <?php echo AText::_('DATABASE_MSG_SUCCESS'); ?>
             </p>
-            <button type="button" onclick="databaseBtnSuccessClick(); return false;" class="akeeba-btn--green">
+            <button type="button" onclick="databaseBtnSuccessClick();" class="akeeba-btn--green">
                 <span class="akion-arrow-right-c"></span>
 			    <?php echo AText::_('DATABASE_BTN_SUCCESS'); ?>
             </button>

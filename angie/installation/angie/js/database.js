@@ -5,13 +5,19 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL v3 or later
  */
 
-var databaseKey = null;
-var databaseThrottle = 100;
+var databaseKey             = null;
+var databaseThrottle        = 100;
 var databasePasswordMessage = '';
-var databasePrefixMessage = '';
-var databaseHasWarnings = false;
-var databaseLogFile = '';
+var databasePrefixMessage   = '';
+var databaseHasWarnings     = false;
+var databaseLogFile         = '';
 
+/**
+ * Toggles the help text on the page.
+ *
+ * By default we hide the help text underneath each field because it makes the page look busy. When the user clicks on
+ * the Show / hide help we make it appear. Click again, it disappears again.
+ */
 function toggleHelp()
 {
 	var elHelpTextAll = document.querySelectorAll('.akeeba-help-text');
@@ -49,36 +55,31 @@ function databaseRunRestoration(key)
 	};
 
 	// Get the form data and add them to the dbinfo request array
-	data.dbinfo.dbtype                 = $('#dbtype').val();
-	data.dbinfo.dbhost                 = $('#dbhost').val();
-	data.dbinfo.dbuser                 = $('#dbuser').val();
-	data.dbinfo.dbpass                 = $('#dbpass').val();
-	data.dbinfo.dbname                 = $('#dbname').val();
-	data.dbinfo.existing               = $('#existing').val();
-	data.dbinfo.prefix                 = $('#prefix').val();
-	data.dbinfo.foreignkey             = +$('#foreignkey').is(':checked');
-	data.dbinfo.noautovalue            = +$('#noautovalue').is(':checked');
-	data.dbinfo.replace                = +$('#replace').is(':checked');
-	data.dbinfo.utf8db                 = +$('#utf8db').is(':checked');
-	data.dbinfo.utf8tables             = +$('#utf8tables').is(':checked');
-	data.dbinfo.utf8mb4                = +$('#utf8mb4').is(':checked');
-	data.dbinfo.break_on_failed_create = +$('#break_on_failed_create').is(':checked');
-	data.dbinfo.break_on_failed_insert = +$('#break_on_failed_insert').is(':checked');
-	data.dbinfo.maxexectime            = $('#maxexectime').val();
-	data.dbinfo.throttle               = $('#throttle').val();
+	data.dbinfo.dbtype                 = document.getElementById('dbtype').value;
+	data.dbinfo.dbhost                 = document.getElementById('dbhost').value;
+	data.dbinfo.dbuser                 = document.getElementById('dbuser').value;
+	data.dbinfo.dbpass                 = document.getElementById('dbpass').value;
+	data.dbinfo.dbname                 = document.getElementById('dbname').value;
+	data.dbinfo.prefix                 = document.getElementById('prefix').value;
+	data.dbinfo.existing               = document.getElementById('existing-drop').checked ? 'drop' : 'backup';
+	data.dbinfo.foreignkey             = +document.getElementById('foreignkey').checked;
+	data.dbinfo.noautovalue            = +document.getElementById('noautovalue').checked;
+	data.dbinfo.replace                = +document.getElementById('replace').checked;
+	data.dbinfo.utf8db                 = +document.getElementById('utf8db').checked;
+	data.dbinfo.utf8tables             = +document.getElementById('utf8tables').checked;
+	data.dbinfo.utf8mb4                = +document.getElementById('utf8mb4').checked;
+	data.dbinfo.break_on_failed_create = +document.getElementById('break_on_failed_create').checked;
+	data.dbinfo.break_on_failed_insert = +document.getElementById('break_on_failed_insert').checked;
+	data.dbinfo.maxexectime            = document.getElementById('maxexectime').value;
+	data.dbinfo.throttle               = document.getElementById('throttle').value;
 
-	databaseThrottle = data.dbinfo.throttle;
-	if (databaseThrottle <= 100)
-	{
-		databaseThrottle = 100;
-	}
-	else if (databaseThrottle >= 60000)
-	{
-		databaseThrottle = 60000;
-	}
+	// Apply bounds to the throttle (wait time in msec)
+	var databaseThrottle = data.dbinfo.throttle;
+	databaseThrottle     = Math.min(databaseThrottle, 100);
+	databaseThrottle     = Math.max(databaseThrottle, 60000);
 
 	// Check whether the prefix contains uppercase characters and show a warning
-	if (databasePrefixMessage.length && (/[A-Z]{1,}/.test(data.dbinfo.prefix) != false))
+	if (databasePrefixMessage.length && (/[A-Z]{1,}/.test(data.dbinfo.prefix) !== false))
 	{
 		if (!window.confirm(databasePrefixMessage))
 		{
@@ -87,7 +88,7 @@ function databaseRunRestoration(key)
 	}
 
 	// Check whether the password contains non-ASCII characters and show a warning
-	if (databasePasswordMessage.length && (/^[a-zA-Z0-9- ]*$/.test(data.dbinfo.dbpass) == false))
+	if (databasePasswordMessage.length && (/^[a-zA-Z0-9- ]*$/.test(data.dbinfo.dbpass) === false))
 	{
 		if (!window.confirm(databasePasswordMessage))
 		{
@@ -96,21 +97,26 @@ function databaseRunRestoration(key)
 	}
 
 	// Set up the modal dialog
-	$('#restoration-btn-modalclose').hide(0);
-	$('#restoration-dialog .modal-body > div').hide(0);
-	$('#restoration-progress-bar').css('width', '0%');
-	$('#restoration-lbl-restored').text('');
-	$('#restoration-lbl-total').text('');
-	$('#restoration-lbl-eta').text('');
-	$('#restoration-progress').show(0);
+	document.getElementById('restoration-progress-bar').style.width    = '0%';
+	document.getElementById('restoration-progress-bar-text').innerText = '0%';
+	document.getElementById('restoration-lbl-restored').innerText      = '';
+	document.getElementById('restoration-lbl-total').innerText         = '';
+	document.getElementById('restoration-lbl-eta').innerText           = '';
+	document.getElementById('restoration-progress').style.display      = 'block';
+	document.getElementById('restoration-success').style.display       = 'none';
+	document.getElementById('restoration-error').style.display         = 'none';
 
 	// Open the restoration's modal dialog
-	$('#restoration-dialog').modal({keyboard: false, backdrop: 'static'});
+	akeeba.Modal.open({
+		inherit: '#restoration-dialog',
+		width:   '80%',
+		lock:    true
+	});
 
 	// Reset the warnings status
-	databaseHasWarnings = false;
-	databaseLogFile     = '';
-	$('#restoration-warnings').hide(0);
+	databaseHasWarnings                                           = false;
+	databaseLogFile                                               = '';
+	document.getElementById('restoration-warnings').style.display = 'none';
 
 	// Start the restoration
 	akeebaAjax.callJSON(data, databaseParseRestoration, databaseErrorRestoration);
@@ -133,37 +139,40 @@ function databaseParseRestoration(msg)
 	if (msg.done == 1)
 	{
 		// The restoration is complete
-		$('#restoration-dialog .modal-body > div').hide(0);
-		$('#restoration-success').show(0);
-		$('#restoration-success-nowarnings').show(0);
-		$('#restoration-success-warnings').hide(0);
+		document.getElementById('restoration-progress').style.display           = 'none';
+		document.getElementById('restoration-success').style.display            = 'block';
+		document.getElementById('restoration-error').style.display              = 'none';
+		document.getElementById('restoration-success-nowarnings').style.display = 'block';
+		document.getElementById('restoration-success-warnings').style.display   = 'none';
 
 		// Display a message if there were any warnings during the restoration
 		if (databaseHasWarnings)
 		{
-			$('#restoration-success-nowarnings').hide(0);
-			$('#restoration-success-warnings').show(0);
-			$('#restoration-sql-log').text(databaseLogFile);
+			document.getElementById('restoration-success-nowarnings').style.display = 'hide';
+			document.getElementById('restoration-success-warnings').style.display   = 'show';
+			document.getElementById('restoration-sql-log').innerText                = databaseLogFile;
 		}
 
 		return;
 	}
 
 	// Step through the restoration
-	$('#restoration-dialog .modal-body > div').hide(0);
-	$('#restoration-progress').show(0);
-	$('#restoration-progress-bar').css('width', msg.percent + '%');
-	$('#restoration-lbl-restored').text(msg.restored);
-	$('#restoration-lbl-total').text(msg.total);
-	$('#restoration-lbl-eta').text(msg.eta);
+	document.getElementById('restoration-progress').style.display      = 'block';
+	document.getElementById('restoration-success').style.display       = 'none';
+	document.getElementById('restoration-error').style.display         = 'none';
+	document.getElementById('restoration-progress-bar').style.width    = msg.percent + '%';
+	document.getElementById('restoration-progress-bar-text').innerText = msg.percent + '%';
+	document.getElementById('restoration-lbl-restored').innerText      = msg.restored;
+	document.getElementById('restoration-lbl-total').innerText         = msg.total;
+	document.getElementById('restoration-lbl-eta').innerText           = msg.eta;
 
 	// Display warning box if necessary (restoration)
 	if (!databaseHasWarnings && (msg.errorcount > 0))
 	{
-		databaseHasWarnings = true;
-		databaseLogFile     = msg.errorlog;
-		$('#restoration-warnings').show(0);
-		$('#restoration-inprogress-log').text(databaseLogFile);
+		databaseHasWarnings                                             = true;
+		databaseLogFile                                                 = msg.errorlog;
+		document.getElementById('restoration-warnings').style.display   = 'block';
+		document.getElementById('restoration-inprogress-log').innerText = databaseLogFile;
 	}
 
 	setTimeout(databaseStepRestoration, databaseThrottle);
@@ -175,10 +184,10 @@ function databaseParseRestoration(msg)
 function databaseStepRestoration()
 {
 	var data = {
-		'view':			'dbrestore',
-		'task':			'step',
-		'format':		'json',
-		'key':			databaseKey
+		'view':   'dbrestore',
+		'task':   'step',
+		'format': 'json',
+		'key':    databaseKey
 	};
 
 	akeebaAjax.callJSON(data, databaseParseRestoration, databaseErrorRestoration);
@@ -189,13 +198,14 @@ function databaseStepRestoration()
  */
 function databaseErrorRestoration(error_message)
 {
-	$('#restoration-btn-modalclose').show(0);
-	$('#restoration-dialog .modal-body > div').hide(0);
-	$('#restoration-lbl-error').html(error_message);
-	$('#restoration-error').show(0);
+	document.getElementById('restoration-progress').style.display  = 'none';
+	document.getElementById('restoration-success').style.display   = 'none';
+	document.getElementById('restoration-error').style.display     = 'block';
+	document.getElementById('restoration-lbl-error').innerHTML     = error_message;
+	document.getElementById('akeeba-modal-close').style.visibility = 'visible';
 }
 
 function databaseBtnSuccessClick(e)
 {
-	window.location = $('.navbar-inner .btn-group a.btn-warning').attr('href');
+	window.location = document.getElementById('btnSkip').href;
 }
