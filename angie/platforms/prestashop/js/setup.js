@@ -47,11 +47,11 @@ function setupSuperUserChange(e)
 
 function openFTPBrowser()
 {
-	var hostname = $('#ftphost').val();
-	var port = $('#ftpport').val();
-	var username = $('#ftpuser').val();
-	var password = $('#ftppass').val();
-	var directory = $('#fptdir').val();
+	var hostname  = document.getElementById('ftphost').value;
+	var port      = document.getElementById('ftpport').value;
+	var username  = document.getElementById('ftpuser').value;
+	var password  = document.getElementById('ftppass').value;
+	var directory = document.getElementById('fptdir').value;
 
 	if ((port <= 0) || (port >= 65536))
 	{
@@ -67,15 +67,15 @@ function openFTPBrowser()
 
 	document.getElementById('browseFrame').src = url;
 
-    akeeba.System.data.set(document.getElementById('browseModal'), 'modal', akeeba.Modal.open({
-        inherit: '#browseModal',
-        width: '80%'
-    }));
+	akeeba.System.data.set(document.getElementById('browseModal'), 'modal', akeeba.Modal.open({
+		inherit: '#browseModal',
+		width:   '80%'
+	}));
 }
 
 function useFTPDirectory(path)
 {
-	$('#ftpdir').val(path);
+	document.getElementById('ftpdir').value = path;
 
-    akeeba.System.data.get(document.getElementById('browseModal'), 'modal').close();
+	akeeba.System.data.get(document.getElementById('browseModal'), 'modal').close();
 }

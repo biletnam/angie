@@ -97,7 +97,7 @@ class AView
 	protected $input = null;
 
     /** @var  AContainer Application container */
-    protected $container;
+    public $container;
 
     /**
      * Constructor

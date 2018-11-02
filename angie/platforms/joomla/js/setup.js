@@ -5,67 +5,77 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL v3 or later
  */
 
-var setupSuperUsers = {};
-var setupDefaultTmpDir = '';
+var setupSuperUsers     = {};
+var setupDefaultTmpDir  = '';
 var setupDefaultLogsDir = '';
 
 /**
  * Initialisation of the page
  */
-$(document).ready(function(){
-	// Enable tooltips
-	$('.help-tooltip').tooltip();
-
-	$('div.navbar div.btn-group a:last').click(function(e){
+akeeba.System.documentReady(function () {
+	// Hook for the Next button
+	akeeba.System.addEventListener('btnNext', 'click', function (e) {
 		document.forms.setupForm.submit();
 		return false;
 	});
 
-	$('#usesitedirs').click(function(e){
+	// Hook for the “Override tmp and log paths” checkbox
+	akeeba.System.addEventListener('usesitedirs', 'click', function (e) {
 		setupOverrideDirectories();
 	});
 
-    $('#showFtpOptions').click(function(){
-        $(this).hide();
-        $('#hideFtpOptions').show();
-        $('#ftpLayerHolder').show();
-        $('#enableftp').val(1);
-    });
-
-    $('#hideFtpOptions').click(function(){
-        $(this).hide();
-        $('#showFtpOptions').show();
-        $('#ftpLayerHolder').hide();
-        $('#enableftp').val(0);
-    });
-});
-
-
-function setupSuperUserChange(e)
-{
-	var saID = $('#superuserid').val();
-	var params = {};
-
-	$.each(setupSuperUsers, function(idx, sa){
-		if(sa.id == saID)
-		{
-			params = sa;
-		}
+	// Hook for the Enable FTP Layer button
+	akeeba.System.addEventListener('showFtpOptions', 'click', function () {
+		document.getElementById('showFtpOptions').style.display = 'none';
+		document.getElementById('hideFtpOptions').style.display = 'block';
+		document.getElementById('ftpLayerHolder').style.display = 'block';
+		document.getElementById('enableftp').value              = 1;
 	});
 
-	$('#superuseremail').val('');
-	$('#superuserpassword').val('');
-	$('#superuserpasswordrepeat').val('');
-	$('#superuseremail').val(params.email);
+	// Hook for the Disable FTP Layer button
+	akeeba.System.addEventListener('hideFtpOptions', 'click', function () {
+		document.getElementById('showFtpOptions').style.display = 'block';
+		document.getElementById('hideFtpOptions').style.display = 'none';
+		document.getElementById('ftpLayerHolder').style.display = 'none';
+		document.getElementById('enableftp').value              = 0;
+	});
+});
+
+/**
+ * Runs whenever the Super User selection changes, displaying the correct SU's parameters on the page
+ *
+ * @param e
+ */
+function setupSuperUserChange(e)
+{
+	var saID   = document.getElementById('superuserid').value;
+	var params = {};
+
+	for (var idx = 0; idx < setupSuperUsers.length; idx++)
+	{
+		var sa = setupSuperUsers[idx];
+
+		if (sa.id === saID)
+		{
+			params = sa;
+
+			break;
+		}
+	}
+
+	document.getElementById('superuseremail').value          = '';
+	document.getElementById('superuserpassword').value       = '';
+	document.getElementById('superuserpasswordrepeat').value = '';
+	document.getElementById('superuseremail').value          = params.email;
 }
 
 function openFTPBrowser()
 {
-	var hostname = $('#ftphost').val();
-	var port = $('#ftpport').val();
-	var username = $('#ftpuser').val();
-	var password = $('#ftppass').val();
-	var directory = $('#fptdir').val();
+	var hostname  = document.getElementById('ftphost').value;
+	var port      = document.getElementById('ftpport').value;
+	var username  = document.getElementById('ftpuser').value;
+	var password  = document.getElementById('ftppass').value;
+	var directory = document.getElementById('fptdir').value;
 
 	if ((port <= 0) || (port >= 65536))
 	{
@@ -82,20 +92,20 @@ function openFTPBrowser()
 	document.getElementById('browseFrame').src = url;
 
 	akeeba.System.data.set(document.getElementById('browseModal'), 'modal', akeeba.Modal.open({
-        inherit: '#browseModal',
-        width: '80%'
-    }));
+		inherit: '#browseModal',
+		width:   '80%'
+	}));
 }
 
 function useFTPDirectory(path)
 {
-	$('#ftpdir').val(path);
+	document.getElementById('ftpdir').value = path;
 
-    akeeba.System.data.get(document.getElementById('browseModal'), 'modal').close();
+	akeeba.System.data.get(document.getElementById('browseModal'), 'modal').close();
 }
 
 function setupOverrideDirectories()
 {
-	$('#tmppath').val(setupDefaultTmpDir);
-	$('#logspath').val(setupDefaultLogsDir);
+	document.getElementById('tmppath').value  = setupDefaultTmpDir;
+	document.getElementById('logspath').value = setupDefaultLogsDir;
 }
