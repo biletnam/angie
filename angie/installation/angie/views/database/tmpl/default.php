@@ -26,6 +26,17 @@ $dbPrefixMessage = str_replace(array("\n", "'"), array('\\n', '\\\''), $dbPrefix
 $dbuserEscaped   = addcslashes($this->db->dbuser, '\'\\');
 $dbpassEscaped   = addcslashes($this->db->dbpass, '\'\\');
 
+$header = '';
+
+if ($this->number_of_substeps)
+{
+    $header = AText::_('DATABASE_HEADER_MASTER_MAINDB');
+
+    if ($this->substep != 'site.sql')
+    {
+        $header = AText::sprintf('DATABASE_HEADER_MASTER', $this->substep);
+    }
+}
 
 $document->addScriptDeclaration(<<<JS
 var akeebaAjax = null;
@@ -122,13 +133,13 @@ echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeeb
     </div>
 </div>
 
-<?php if ($this->number_of_substeps): ?>
-	<?php if ($this->substep == 'site.sql'): ?>
-<h1><?php echo AText::_('DATABASE_HEADER_MASTER_MAINDB') ?></h1>
-	<?php else: ?>
-<h1><?php echo AText::sprintf('DATABASE_HEADER_MASTER', $this->substep) ?></h1>
-	<?php endif; ?>
-<?php endif; ?>
+<div>
+    <button class="akeeba-btn--dark" style="float: right;" onclick="toggleHelp()">
+        <span class="akion-help"></span>
+        Show / hide help
+    </button>
+    <h1><?php echo $header ?></h1>
+</div>
 
 <div class="akeeba-container--50-50">
 	<div class="akeeba-panel--teal" style="margin-top: 0">
@@ -158,7 +169,7 @@ echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeeb
 					<?php echo AText::_('DATABASE_LBL_HOSTNAME') ?>
 				</label>
                 <input type="text" id="dbhost" placeholder="<?php echo AText::_('DATABASE_LBL_HOSTNAME') ?>" value="<?php echo $this->db->dbhost ?>" />
-                <span style="display: none">
+                <span class="akeeba-help-text" style="display: none">
 					<?php echo AText::_('DATABASE_LBL_HOSTNAME_HELP') ?>
 				</span>
 			</div>
@@ -189,7 +200,17 @@ echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeeb
                     <?php echo AText::_('DATABASE_LBL_DBNAME_HELP') ?>
                 </span>
 			</div>
-		</div>
+
+            <div class="akeeba-form-group">
+                <label for="prefix">
+					<?php echo AText::_('DATABASE_LBL_PREFIX') ?>
+                </label>
+                <input type="text" id="prefix" placeholder="<?php echo AText::_('DATABASE_LBL_PREFIX') ?>" value="<?php echo $this->db->prefix ?>" />
+                <span class="akeeba-help-text" style="display: none">
+					<?php echo AText::_('DATABASE_LBL_PREFIX_HELP') ?>
+				</span>
+            </div>
+        </div>
 	</div>
 
 	<div id="advancedWrapper" class="akeeba-panel--info" >
@@ -211,16 +232,6 @@ echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeeb
                 </div>
 				<span class="akeeba-help-text" style="display: none">
 					<?php echo AText::_('DATABASE_LBL_EXISTING_HELP') ?>
-				</span>
-			</div>
-
-            <div class="akeeba-form-group">
-				<label for="prefix">
-					<?php echo AText::_('DATABASE_LBL_PREFIX') ?>
-				</label>
-                <input type="text" id="prefix" placeholder="<?php echo AText::_('DATABASE_LBL_PREFIX') ?>" value="<?php echo $this->db->prefix ?>" />
-                <span class="akeeba-help-text" style="display: none">
-					<?php echo AText::_('DATABASE_LBL_PREFIX_HELP') ?>
 				</span>
 			</div>
 
@@ -325,7 +336,7 @@ echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeeb
                 <label for="throttle">
                     <?php echo AText::_('DATABASE_LBL_THROTTLEMSEC') ?>
                 </label>
-                <input class="input-mini" type="text" id="maxexectime" placeholder="<?php echo AText::_('DATABASE_LBL_THROTTLEMSEC') ?>" value="<?php echo $this->db->throttle ?>" />
+                <input class="input-mini" type="text" id="throttle" placeholder="<?php echo AText::_('DATABASE_LBL_THROTTLEMSEC') ?>" value="<?php echo $this->db->throttle ?>" />
                 <span class="akeeba-help-text" style="display: none;">
                     <?php echo AText::_('DATABASE_LBL_THROTTLEMSEC_HELP') ?>
                 </span>

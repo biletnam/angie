@@ -13,6 +13,12 @@ class AngieViewDatabase extends AView
 	/** @var int Do we have a flag for large tables? */
 	public $large_tables = 0;
 
+	public $substep = '';
+
+	public $number_of_substeps = 0;
+
+	public $db;
+
 	public function onBeforeMain()
 	{
 		/** @var AngieModelSteps $stepsModel */

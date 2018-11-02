@@ -12,15 +12,24 @@ var databasePrefixMessage = '';
 var databaseHasWarnings = false;
 var databaseLogFile = '';
 
-/**
- * Initialisation of the page
- */
-akeeba.System.documentReady(function ()
+function toggleHelp()
 {
-	// Enable tooltips
-	akeeba.Tooltip.enableFor(document.querySelectorAll('.help-tooltip'), false);
-});
+	var elHelpTextAll = document.querySelectorAll('.akeeba-help-text');
 
+	for (var i = 0; i < elHelpTextAll.length; i++)
+	{
+		var elHelp = elHelpTextAll[i];
+
+		if (elHelp.style.display === 'none')
+		{
+			elHelp.style.display = 'block';
+
+			continue;
+		}
+
+		elHelp.style.display = 'none';
+	}
+}
 
 /**
  * Begins the database restoration using the filled-in form data
@@ -68,7 +77,7 @@ function databaseRunRestoration(key)
 		databaseThrottle = 60000;
 	}
 
-	// Check whether the password contains non-ASCII characters and show a warning
+	// Check whether the prefix contains uppercase characters and show a warning
 	if (databasePrefixMessage.length && (/[A-Z]{1,}/.test(data.dbinfo.prefix) != false))
 	{
 		if (!window.confirm(databasePrefixMessage))
