@@ -40,6 +40,6 @@ WordPress
 [DONE] Pre-installation
 [DONE] Database restoration (common)
 [DONE] Off-site folders (common)
-Site Setup
+[DONE] Site Setup
 Data Replace
 Finished
