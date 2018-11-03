@@ -8,8 +8,13 @@
  */
 defined('_AKEEBA') or die();
 
-class AngieModelDrupal7Setup extends AngieModelBaseSetup
+class AngieModelDrupal8Setup extends AngieModelBaseSetup
 {
+    /**
+     * @var AngieModelDrupal8Configuration $configModel
+     */
+    protected $configModel;
+
     /**
      * I have to override the base method, since I could have more than one site and I have to
      * manage the cache accordingly
@@ -57,7 +62,7 @@ class AngieModelDrupal7Setup extends AngieModelBaseSetup
 		);
 
         // Let's cleanup the live site url
-        require_once APATH_INSTALLATION.'/angie/helpers/setup.php';
+        require_once APATH_INSTALLATION . '/angie/helpers/setup.php';
 
         $ret['livesite'] = AngieHelperSetup::cleanLiveSite($ret['livesite']);
 
@@ -89,34 +94,13 @@ class AngieModelDrupal7Setup extends AngieModelBaseSetup
 			return $ret;
 		}
 
-		// Find the Super User groups
-		try
-		{
-			$query = $db->getQuery(true)
-                        ->select($db->qn('rid'))
-                        ->from($db->qn('#__role'))
-                        ->where($db->qn('name') . ' = ' . $db->q('administrator'));
-			$roleId	 = $db->setQuery($query)->loadResult();
-
-            // Mhm this is weird, since there should always be an "administrator" role
-            // Better stop here
-            if(!$roleId)
-            {
-                return $ret;
-            }
-		}
-		catch (Exception $exc)
-		{
-			return $ret;
-		}
-
 		// Get the user IDs of users belonging to the SA groups
 		try
 		{
-			$query = $db->getQuery(true)
-                        ->select($db->qn('uid'))
-                        ->from($db->qn('#__users_roles'))
-                        ->where($db->qn('rid') . ' = ' . $db->q($roleId) );
+            $query = $db->getQuery(true)
+                        ->select($db->qn('entity_id'))
+                        ->from($db->qn('#__user__roles'))
+                        ->where($db->qn('roles_target_id') . ' = ' . $db->q('administrator'));
 			$rawUserIDs = $db->setQuery($query)->loadColumn(0);
 
 			if (empty($rawUserIDs))
@@ -145,7 +129,7 @@ class AngieModelDrupal7Setup extends AngieModelBaseSetup
                             $db->qn('name').' AS username',
                             $db->qn('mail').' AS email',
                         ))
-                        ->from($db->qn('#__users'))
+                        ->from($db->qn('#__users_field_data'))
                         ->where($db->qn('uid'). ' IN(' . implode(',', $userIDs) . ')');
 
 			$ret['superusers'] = $db->setQuery($query)->loadObjectList();
@@ -203,8 +187,8 @@ class AngieModelDrupal7Setup extends AngieModelBaseSetup
         // -- Override the secret key
         $random = new AUtilsRandval();
 
-		$this->configModel->set('drupal_private_key', substr(base64_encode($random->generate(43)), 0, 43), $folder);
-		$this->configModel->set('cron_key', substr(base64_encode($random->generate(43)), 0, 43), $folder);
+		$this->configModel->set('drupal_private_key', str_replace(array('+', '/', '='), array('-', '_', ''), base64_encode($random->generate(55))), $folder);
+		$this->configModel->set('cron_key', str_replace(array('+', '/', '='), array('-', '_', ''), base64_encode($random->generate(55))), $folder);
 
 		$this->configModel->saveToSession();
 
@@ -275,12 +259,11 @@ class AngieModelDrupal7Setup extends AngieModelBaseSetup
 
 		// Update the database record
 		$query = $db->getQuery(true)
-			->update($db->qn('#__users'))
-			->set($db->qn('pass') . ' = ' . $db->q($cryptpass))
-			->set($db->qn('mail') . ' = ' . $db->q($email))
-			->where($db->qn('uid') . ' = ' . $db->q($id));
-		$db->setQuery($query);
-		$db->execute();
+                    ->update($db->qn('#__users_field_data'))
+                    ->set($db->qn('pass') . ' = ' . $db->q($cryptpass))
+                    ->set($db->qn('mail') . ' = ' . $db->q($email))
+                    ->where($db->qn('uid') . ' = ' . $db->q($id));
+		$db->setQuery($query)->execute();
 
 		return true;
 	}
@@ -328,7 +311,7 @@ class AngieModelDrupal7Setup extends AngieModelBaseSetup
         }
 
         // First of all, let's get the old hostname
-        /** @var AngieModelDrupal7Main $mainModel */
+        /** @var AngieModelDrupal8Main $mainModel */
         $mainModel = AModel::getAnInstance('Main', 'AngieModel', array(), $this->container);
         $extraInfo = $mainModel->getExtraInfo();
 
@@ -367,7 +350,7 @@ class AngieModelDrupal7Setup extends AngieModelBaseSetup
         $oldNamespace = basename($directory);
         $newNamespace = basename($newDirectory);
 
-        /** @var AngieModelDrupal7Configuration $configModel */
+        /** @var AngieModelDrupal8Configuration $configModel */
         $configModel = $this->configModel;
         $configVars  = $configModel->getConfigvars();
 

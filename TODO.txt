@@ -1,30 +1,42 @@
+Solo
+========================================================================================================================
+Remove references to removed platforms from Configuration page.
+If a deprecated site type or installed is used, revert to Generic script type at backup time.
+
+Common
+========================================================================================================================
+[DONE] Session fix
+[DONE] Session locked
+[DONE] ANGIE Password
+
+Generic
+========================================================================================================================
+[DONE] Pre-installation
+[DONE] Database restoration (common)
+[DONE] Off-site folders (common)
+Finished
+
+Joomla!
+========================================================================================================================
+[DONE] Pre-installation
+[DONE] Database restoration (common)
+[DONE] Off-site folders (common)
+[DONE] Site Setup
+Finished
+
+PrestaShop
+========================================================================================================================
+[DONE] Pre-installation
+[DONE] Database restoration (common)
+[DONE] Off-site folders (common)
 Site Setup
-------------------------------------------------------------------------------------------------------------------------
-    [DONE] Joomla
-    [DONE] WordPress
-    Drupal 7            http://angie.local.web/drupal7/installation/index.php?view=setup
-    Drupal 8            http://angie.local.web/drupal8/installation/index.php?view=setup
-    PrestaShop          http://angie.local.web/prestashop/installation/index.php?view=setup
+Finished
 
+WordPress
+========================================================================================================================
+[DONE] Pre-installation
+[DONE] Database restoration (common)
+[DONE] Off-site folders (common)
+Site Setup
 Data Replace
-------------------------------------------------------------------------------------------------------------------------
-    WordPress (replacedata)     http://angie.local.web/wordpress/installation/index.php?view=replacedata
-    Drupal 7 (updatealias)
-    Drupal 8 (updatealias)
-
-Finalization
-------------------------------------------------------------------------------------------------------------------------
-    Generic
-    Joomla          http://angie.local.web/joomla/installation/index.php?view=finalise
-    WordPress
-    Drupal 7
-    Drupal 8
-    PrestaShop
-
-Off-site folders
-------------------------------------------------------------------------------------------------------------------------
-    Move, not copy, files
-    Move must happen in steps and report the progress to the user
-        Use 3" steps
-        Model must return % done
-        JS must take % done into account and display it
+Finished
