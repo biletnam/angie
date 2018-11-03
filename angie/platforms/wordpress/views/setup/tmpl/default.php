@@ -110,9 +110,9 @@ echo $this->loadAnyTemplate('steps/steps', ['helpurl' => 'https://www.akeebaback
 		</div>
 
 		<div>
-			<div class="akeeba-panel--orange">
+			<div class="akeeba-panel--orange" style="margin-top: 0">
 				<header class="akeeba-block-header">
-					<h3><?php echo AText::_('SETUP_HEADER_SERVERCONFIG') ?></h3>s
+					<h3><?php echo AText::_('SETUP_HEADER_SERVERCONFIG') ?></h3>
 				</header>
 
 				<?php if ($this->hasAutoPrepend): ?>
@@ -132,7 +132,7 @@ echo $this->loadAnyTemplate('steps/steps', ['helpurl' => 'https://www.akeebaback
 
 			<!-- Super Administrator settings -->
 			<?php if (isset($this->stateVars->superusers)): ?>
-			<div class="akeeba-panel--orange">
+			<div class="akeeba-panel--info" style="margin-top: 0">
 				<header class="akeeba-block-header">
 					<h3><?php echo AText::_('SETUP_HEADER_SUPERUSERPARAMS') ?></h3>
 				</header>

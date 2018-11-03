@@ -40,7 +40,7 @@ function toggleHelp()
 akeeba.System.documentReady(function () {
 	// Hook for the Next button
 	akeeba.System.addEventListener('btnNext', 'click', function (e) {
-		if (akeeba.System.hasClass(document.getElementById('btnNext'), 'btn-multisite'))
+		if (akeeba.System.hasClass(document.getElementById('btnNext'), 'akeeba-btn--teal--multisite'))
 		{
 			return false;
 		}
@@ -60,10 +60,13 @@ function setupRunRestoration(key)
 
 	// Get an object with the form values
 	var data     = {};
-	var formData = new FormData(document.getElementById(document.forms.setupForm));
+	var formData = new FormData(document.querySelectorAll('form')[0]);
 	formData.forEach(function (value, key) {
 		data[key] = value;
 	});
+
+	console.debug(formData);
+	console.debug(data);
 
 	// Set up the modal dialog
 	document.getElementById('restoration-progress').style.display   = 'block';
@@ -89,7 +92,7 @@ function setupRunRestoration(key)
  */
 function setupErrorRestoration(error_message, config)
 {
-	var elConfig = document.getElementById('restoration-lbl-error');
+	var elConfig = document.getElementById('restoration-config');
 	var elNext   = document.getElementById('nextStep');
 
 	document.getElementById('akeeba-modal-close').style.visibility = 'visible';

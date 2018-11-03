@@ -1,3 +1,26 @@
+Site Setup
+------------------------------------------------------------------------------------------------------------------------
+    [DONE] Joomla
+    [DONE] WordPress
+    Drupal 7            http://angie.local.web/drupal7/installation/index.php?view=setup
+    Drupal 8            http://angie.local.web/drupal8/installation/index.php?view=setup
+    PrestaShop          http://angie.local.web/prestashop/installation/index.php?view=setup
+
+Data Replace
+------------------------------------------------------------------------------------------------------------------------
+    WordPress (replacedata)     http://angie.local.web/wordpress/installation/index.php?view=replacedata
+    Drupal 7 (updatealias)
+    Drupal 8 (updatealias)
+
+Finalization
+------------------------------------------------------------------------------------------------------------------------
+    Generic
+    Joomla          http://angie.local.web/joomla/installation/index.php?view=finalise
+    WordPress
+    Drupal 7
+    Drupal 8
+    PrestaShop
+
 Off-site folders
 ------------------------------------------------------------------------------------------------------------------------
     Move, not copy, files
