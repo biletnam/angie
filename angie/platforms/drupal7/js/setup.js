@@ -5,51 +5,83 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL v3 or later
  */
 
-var setupSuperUsers = {};
-var setupDefaultTmpDir = '';
+var setupSuperUsers     = {};
+var setupDefaultTmpDir  = '';
 var setupDefaultLogsDir = '';
+
+/**
+ * Toggles the help text on the page.
+ *
+ * By default we hide the help text underneath each field because it makes the page look busy. When the user clicks on
+ * the Show / hide help we make it appear. Click again, it disappears again.
+ */
+function toggleHelp()
+{
+	var elHelpTextAll = document.querySelectorAll('.akeeba-help-text');
+
+	for (var i = 0; i < elHelpTextAll.length; i++)
+	{
+		var elHelp = elHelpTextAll[i];
+
+		if (elHelp.style.display === 'none')
+		{
+			elHelp.style.display = 'block';
+
+			continue;
+		}
+
+		elHelp.style.display = 'none';
+	}
+}
 
 /**
  * Initialisation of the page
  */
-$(document).ready(function(){
-	// Enable tooltips
-	$('.help-tooltip').tooltip();
+akeeba.System.documentReady(function () {
+	// Hook for the Next button
+	akeeba.System.addEventListener('btnNext', 'click', function (e) {
+		if (akeeba.System.hasClass(document.getElementById('btnNext'), 'btn-multisite'))
+		{
+			return false;
+		}
 
-	$('div.navbar div.btn-group a:last').click(function(e){
-
-        // If I have a multisite environment I have to submit the form using AJAX + the modal window
-        if($(this).hasClass('btn-multisite'))
-        {
-            return false;
-        }
-
-        document.forms.setupForm.submit();
+		document.forms.setupForm.submit();
 
 		return false;
 	});
 });
+
 function setupRunRestoration(key)
 {
-    $('input[name="task"]').val('applyjson');
-    $('input[name="format"]').val('json');
-    $('input[name="substep"]').val(key);
+	// Manipulate the form's hidden fields
+	document.forms.setupForm.task.value    = 'applyjson';
+	document.forms.setupForm.format.value  = 'json';
+	document.forms.setupForm.substep.value = key;
 
-    var data = $('form[name="setupForm"]').serialize();
+	// Get an object with the form values
+	var data     = {};
+	var formData = new FormData(document.getElementById(document.forms.setupForm));
+	formData.forEach(function (value, key) {
+		data[key] = value;
+	});
 
-    // Set up the modal dialog
-    $('#restoration-btn-modalclose').hide(0);
-    $('#restoration-dialog .modal-body > div').hide(0);
-    $('#restoration-progress-bar').css('width', '0%');
-    $('#restoration-lbl-restored').text('');
-    $('#restoration-lbl-total').text('');
-    $('#restoration-progress').show(0);
+	// Set up the modal dialog
+	document.getElementById('restoration-progress').style.display   = 'block';
+	document.getElementById('restoration-success').style.display    = 'none';
+	document.getElementById('restoration-error').style.display      = 'none';
+	document.getElementById('restoration-progress-bar').style.width = '0%';
 
-    // Open the restoration's modal dialog
-    $('#restoration-dialog').modal({keyboard: false, backdrop: 'static'});
+	// Open the restoration's modal dialog
+	akeeba.Modal.open({
+		inherit: '#restoration-dialog',
+		width:   '80%',
+		lock:    true
+	});
 
-    // Start the restoration
-    setTimeout(function(){akeebaAjax.callJSON(data, setupParseRestoration, setupErrorRestoration);}, 1000);
+	// Start the restoration
+	setTimeout(function () {
+		akeebaAjax.callJSON(data, setupParseRestoration, setupErrorRestoration);
+	}, 1000);
 }
 
 /**
@@ -57,17 +89,25 @@ function setupRunRestoration(key)
  */
 function setupErrorRestoration(error_message, config)
 {
-    $('#restoration-btn-modalclose').show(0);
-    $('#restoration-dialog .modal-body > div').hide(0);
-    $('#restoration-lbl-error').html(error_message);
+	var elConfig = document.getElementById('restoration-lbl-error');
+	var elNext   = document.getElementById('nextStep');
 
-    if(config){
-        $('#restoration-lbl-error').height('auto');
-        $('#restoration-config').html(config).show();
-        $('#nextStep').show();
-    }
+	document.getElementById('akeeba-modal-close').style.visibility = 'visible';
+	document.getElementById('restoration-progress').style.display  = 'none';
+	document.getElementById('restoration-success').style.display   = 'none';
+	document.getElementById('restoration-error').style.display     = 'block';
+	document.getElementById('restoration-lbl-error').innerHTML     = error_message;
+	elConfig.style.display                                         = 'none';
+	elNext.style.display                                           = 'none';
 
-    $('#restoration-error').show(0);
+	if (config)
+	{
+
+		document.getElementById('restoration-lbl-error').style.height = 'auto';
+		elConfig.innerHTML                                            = config;
+		elConfig.style.display                                        = 'block';
+		elNext.style.display                                          = 'block';
+	}
 }
 
 /**
@@ -76,54 +116,60 @@ function setupErrorRestoration(error_message, config)
  */
 function setupParseRestoration(msg)
 {
-    if (msg.error != '')
-    {
-        // An error occurred
-        setupErrorRestoration(msg.error, msg.showconfig);
+	if (msg.error !== '')
+	{
+		// An error occurred
+		setupErrorRestoration(msg.error, msg.showconfig);
 
-        return;
-    }
-    else if (msg.done == 1)
-    {
-        // The restoration is complete
-        $('#restoration-progress-bar').css('width', '100%');
+		return;
+	}
 
-        setTimeout(function(){
-            $('#restoration-dialog .modal-body > div').hide(0);
-            $('#restoration-progress-bar').css('width', '0');
-            $('#restoration-success').show(0);
-        }, 500);
+	if (msg.done == 1)
+	{
+		// The restoration is complete
+		document.getElementById('restoration-progress-bar').style.width = '100%';
 
-        return;
-    }
+		setTimeout(function () {
+			document.getElementById('akeeba-modal-close').style.visibility  = 'visible';
+			document.getElementById('restoration-progress').style.display   = 'none';
+			document.getElementById('restoration-success').style.display    = 'block';
+			document.getElementById('restoration-error').style.display      = 'none';
+			document.getElementById('restoration-progress-bar').style.width = '0%';
+		}, 500);
+	}
 }
 
 function setupBtnSuccessClick(e)
 {
-    window.location = $('.navbar-inner .btn-group a.btn-warning').attr('href');
+	window.location = document.getElementById('btnSkip').href;
 }
 
 function setupSuperUserChange(e)
 {
-	var saID = $('#superuserid').val();
+	var saID   = document.getElementById('superuserid').value;
 	var params = {};
 
-	$.each(setupSuperUsers, function(idx, sa){
-		if(sa.id == saID)
+	for (var idx = 0; idx < setupSuperUsers.length; idx++)
+	{
+		var sa = setupSuperUsers[idx];
+
+		if (sa.id === saID)
 		{
 			params = sa;
-		}
-	});
 
-	$('#superuseremail').val('');
-	$('#superuserpassword').val('');
-	$('#superuserpasswordrepeat').val('');
-	$('#superuseremail').val(params.email);
-	$('#hash').val('');
+			break;
+		}
+	}
+
+	document.getElementById('superuseremail').value          = '';
+	document.getElementById('superuserpassword').value       = '';
+	document.getElementById('superuserpasswordrepeat').value = '';
+	document.getElementById('superuseremail').value          = params.email;
+	document.getElementById('hash').value                    = '';
 }
 
 function setupOverrideDirectories()
 {
-	$('#tmppath').val(setupDefaultTmpDir);
-	$('#logspath').val(setupDefaultLogsDir);
+	document.getElementById('tmppath').value  = setupDefaultTmpDir;
+	document.getElementById('logspath').value = setupDefaultLogsDir;
 }
