@@ -57,7 +57,7 @@ if (isset($this->extra_warning))
 <div class="akeeba-panel--green">
 	<header class="akeeba-block-header">
 		<h3>
-			<?php echo AText::_('FINALISE_HEADER_AFTERCONFIGURATION'); ?>
+			<?php echo AText::_('FINALISE_LBL_READY'); ?>
 		</h3>
 	</header>
 <?php endif; ?>
