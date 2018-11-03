@@ -1,0 +1,7 @@
+Off-site folders
+------------------------------------------------------------------------------------------------------------------------
+    Move, not copy, files
+    Move must happen in steps and report the progress to the user
+        Use 3" steps
+        Model must return % done
+        JS must take % done into account and display it

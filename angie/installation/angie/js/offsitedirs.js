@@ -9,29 +9,33 @@ function offsitedirsRunRestoration(key)
 {
 	// Prime the request data
 	var data = {
-		'view':		'offsitedirs',
-		'task':		'move',
-		'format':	'json',
-		'key':		key,
-		'info':		{}
+		'view':   'offsitedirs',
+		'task':   'move',
+		'format': 'json',
+		'key':    key,
+		'info':   {}
 	};
-	
+
 	// Get the form data and add them to the dbinfo request array
-	data.info.target	= $('#target_folder').val();
+	data.info.target = document.getElementById('target_folder').value;
 
 	// Set up the modal dialog
-	$('#restoration-btn-modalclose').hide(0);
-	$('#restoration-dialog .modal-body > div').hide(0);
-	$('#restoration-progress-bar').css('width', '0%');
-	$('#restoration-lbl-restored').text('');
-	$('#restoration-lbl-total').text('');
-	$('#restoration-progress').show(0);
-	
-	// Open the restoration's modal dialog
-	$('#restoration-dialog').modal({keyboard: false, backdrop: 'static'});
+	document.getElementById('restoration-progress-bar').style.width = '0%';
+	document.getElementById('restoration-progress').style.display   = 'block';
+	document.getElementById('restoration-success').style.display    = 'none';
+	document.getElementById('restoration-error').style.display      = 'none';
 
-    // Start the restoration
-    setTimeout(function(){akeebaAjax.callJSON(data, databaseParseRestoration, databaseErrorRestoration);}, 1000);
+	// Open the restoration's modal dialog
+	akeeba.Modal.open({
+		inherit: '#restoration-dialog',
+		width:   '80%',
+		lock:    true
+	});
+
+	// Start the restoration
+	setTimeout(function () {
+		akeebaAjax.callJSON(data, databaseParseRestoration, databaseErrorRestoration);
+	}, 1000);
 }
 
 /**
@@ -39,10 +43,11 @@ function offsitedirsRunRestoration(key)
  */
 function databaseErrorRestoration(error_message)
 {
-	$('#restoration-btn-modalclose').show(0);
-	$('#restoration-dialog .modal-body > div').hide(0);
-	$('#restoration-lbl-error').html(error_message);
-	$('#restoration-error').show(0);
+	document.getElementById('restoration-progress').style.display  = 'none';
+	document.getElementById('restoration-success').style.display   = 'none';
+	document.getElementById('restoration-error').style.display     = 'block';
+	document.getElementById('restoration-lbl-error').innerHTML     = error_message;
+	document.getElementById('akeeba-modal-close').style.visibility = 'visible';
 }
 
 /**
@@ -51,29 +56,28 @@ function databaseErrorRestoration(error_message)
  */
 function databaseParseRestoration(msg)
 {
-    if (msg.error != '')
-    {
-        // An error occurred
-        databaseErrorRestoration(msg.error);
+	if (msg.error !== '')
+	{
+		// An error occurred
+		databaseErrorRestoration(msg.error);
 
-        return;
-    }
-    else if (msg.done == 1)
-    {
-        // The restoration is complete
-        $('#restoration-progress-bar').css('width', '100%');
+		return;
+	}
 
-        setTimeout(function(){
-            $('#restoration-dialog .modal-body > div').hide(0);
-            $('#restoration-progress-bar').css('width', '0');
-            $('#restoration-success').show(0);
-        }, 500);
+	if (msg.done == 1)
+	{
+		// The restoration is complete
+		document.getElementById('restoration-progress-bar').style.width = '100%';
 
-        return;
-    }
+		setTimeout(function () {
+			document.getElementById('restoration-progress').style.display           = 'none';
+			document.getElementById('restoration-success').style.display            = 'block';
+			document.getElementById('restoration-error').style.display              = 'none';
+		}, 500);
+	}
 }
 
 function databaseBtnSuccessClick(e)
 {
-	window.location = $('.navbar-inner .btn-group a.btn-warning').attr('href');
+	window.location = document.getElementById('btnSkip').href;
 }
