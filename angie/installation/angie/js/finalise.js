@@ -8,61 +8,68 @@
 /**
  * Initialisation of the page
  */
-$(document).ready(function(){
-	// Enable tooltips
-	$('.help-tooltip').tooltip();
-	
-	$('#removeInstallation').click(function(e){
+akeeba.System.documentReady(function () {
+	akeeba.System.addEventListener(document.getElementById('removeInstallation'), 'click', function (e) {
 		finaliseRemoveInstallation();
+
 		return false;
 	});
 });
 
 /**
  * Try removing the installation directory using an AJAX request
- * 
+ *
  * @returns void
  */
 function finaliseRemoveInstallation()
 {
 	// Set up the request
 	var data = {
-		'view':			'finalise',
-		'task':			'cleanup',
-		'format':		'json'
+		'view':   'finalise',
+		'task':   'cleanup',
+		'format': 'json'
 	};
-	
+
 	// Start the restoration
 	akeebaAjax.callJSON(data, finaliseParseMessage, finaliseError);
 }
 
 /**
  * Parse the installation directory cleanup message
- * 
- * @param    mixed  msg  The message received from the server
- * 
+ *
+ * @param    {string|boolean}  msg  The message received from the server
+ *
  * @returns void
  */
 function finaliseParseMessage(msg)
 {
-	if (msg == true)
+	if (msg === true)
 	{
-		$('#success-dialog').modal({keyboard: false, backdrop: 'static'});
+		open({
+			inherit: '#success-dialog',
+			width:   '80%'
+		});
 	}
 	else
 	{
-		$('#error-dialog').modal({keyboard: true, backdrop: 'static'});
+		open({
+			inherit: '#error-dialog',
+			width:   '80%'
+		});
 	}
 }
 
 /**
  * Handles error messages during the installation directory cleanup
- * 
- * @param   string  error_message
- * 
+ *
+ * @param   {string}  error_message
+ *
  * @returns void
  */
 function finaliseError(error_message)
 {
-	$('#error-dialog').modal({keyboard: true, backdrop: 'static'});
+	open({
+		inherit: '#error-dialog',
+		width:   '80%'
+	});
 }

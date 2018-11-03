@@ -21,20 +21,20 @@ $url = 'index.php';
 $js = <<<JS
 var akeebaAjax = null;
 
-$(document).ready(function(){
+akeeba.System.documentReady(function(){
 	akeebaAjax = new akeebaAjaxConnector('$url');
 
-	if ((window.name == 'installer'))
+	if ((window.name === 'installer'))
 	{
-		jQuery('#finaliseKickstart').show();
+		document.getElementById('finaliseKickstart').style.display = 'block';
 	}
-	else if ((window.name == 'abinstaller') || (window.name == 'solo_angie_window'))
+	else if ((window.name === 'abinstaller') || (window.name === 'solo_angie_window'))
 	{
-		jQuery('#finaliseIntegrated').show();
+		document.getElementById('finaliseIntegrated').style.display = 'block';
 	}
 	else
 	{
-		jQuery('#finaliseStandalone').show();
+		document.getElementById('finaliseStandalone').style.display = 'block';
 	}
 });
 JS;
@@ -45,57 +45,63 @@ echo $this->loadAnyTemplate('steps/buttons');
 echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeebabackup.com/documentation/solo/angie-installers.html#angie-common-finalise'));
 ?>
 
-<h3>
-	<?php echo AText::_('FINALISE_LBL_READY'); ?>
-</h3>
+<div class="akeeba-panel--green">
+	<header class="akeeba-block-header">
+		<h3>
+			<?php echo AText::_('FINALISE_LBL_READY'); ?>
+		</h3>
+	</header>
 
-<div id="finaliseKickstart" style="display: none">
-	<p>
-		<?php echo AText::_('FINALISE_LBL_KICKSTART'); ?>
-	</p>
-</div>
-
-<div id="finaliseIntegrated" style="display: none">
-	<p>
-		<?php echo AText::_('FINALISE_LBL_INTEGRATED'); ?>
-	</p>
-</div>
-
-<div id="finaliseStandalone" style="display: none">
-	<p>
-		<?php echo AText::_('FINALISE_LBL_STANDALONE'); ?>
-	</p>
-	<p>
-		<button type="button" class="btn btn-large btn-success" id="removeInstallation">
-			<span class="icon-white icon-remove"></span>
-			<?php echo AText::_('FINALISE_BTN_REMOVEINSTALLATION'); ?>
-		</button>
-	</p>
-</div>
-
-<div id="error-dialog" class="modal hide fade">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="error-btn-modalclose">&times;</button>
-		<h3><?php echo AText::_('FINALISE_HEADER_ERROR') ?></h3>
-	</div>
-	<div class="modal-body" id="error-message">
-		<p><?php echo AText::_('FINALISE_LBL_ERROR') ?></p>
-	</div>
-</div>
-
-<div id="success-dialog" class="modal hide fade">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="success-btn-modalclose">&times;</button>
-		<h3><?php echo AText::_('FINALISE_HEADER_SUCCESS') ?></h3>
-	</div>
-	<div class="modal-body">
+	<div id="finaliseKickstart" style="display: none">
 		<p>
-			<?php echo AText::sprintf('FINALISE_LBL_SUCCESS', 'https://www.akeebabackup.com/documentation/troubleshooter/prbasicts.html') ?>
+			<?php echo AText::_('FINALISE_LBL_KICKSTART'); ?>
 		</p>
-		<a class="btn btn-success" href="<?php echo AUri::base() . '../index.php' ?>">
-			<span class="icon-white icon-forward"></span>
-			<?php echo AText::_('FINALISE_BTN_VISITFRONTEND'); ?>
-		</a>
+	</div>
+
+	<div id="finaliseIntegrated" style="display: none">
+		<p>
+			<?php echo AText::_('FINALISE_LBL_INTEGRATED'); ?>
+		</p>
+	</div>
+
+	<div id="finaliseStandalone" style="display: none">
+		<p>
+			<?php echo AText::_('FINALISE_LBL_STANDALONE'); ?>
+		</p>
+		<p>
+			<button type="button" class="akeeba-btn--success--big" id="removeInstallation">
+				<span class="akion-trash-b"></span>
+				<?php echo AText::_('FINALISE_BTN_REMOVEINSTALLATION'); ?>
+			</button>
+		</p>
+	</div>
+</div>
+
+<div id="error-dialog" style="display: none">
+	<div class="akeeba-renderer-fef">
+		<div class="akeeba-panel--red">
+			<header class="akeeba-block-header">
+				<h3><?php echo AText::_('FINALISE_HEADER_ERROR') ?></h3>
+			</header>
+			<p><?php echo AText::_('FINALISE_LBL_ERROR') ?></p>
+		</div>
+	</div>
+</div>
+
+<div id="success-dialog" style="display: none">
+	<div class="akeeba-renderer-fef">
+		<div class="akeeba-panel--green">
+			<header class="akeeba-block-header">
+				<h3><?php echo AText::_('FINALISE_HEADER_SUCCESS') ?></h3>
+			</header>
+			<p>
+				<?php echo AText::sprintf('FINALISE_LBL_SUCCESS', 'https://www.akeebabackup.com/documentation/troubleshooter/prbasicts.html') ?>
+			</p>
+			<a class="akeeba-btn--success" href="<?php echo AUri::base() . '../index.php' ?>">
+				<span class="akion-arrow-right-c"></span>
+				<?php echo AText::_('FINALISE_BTN_VISITFRONTEND'); ?>
+			</a>
+		</div>
 	</div>
 </div>
 
