@@ -34,6 +34,13 @@ echo $this->loadAnyTemplate('steps/buttons');
 echo $this->loadAnyTemplate('steps/steps', ['helpurl' => 'https://www.akeebabackup.com/documentation/solo/angie-prestashop-setup.html']);
 ?>
 <form name="setupForm" action="index.php" method="post" class="akeeba-form--horizontal">
+	<div>
+		<button class="akeeba-btn--dark" style="float: right;" onclick="toggleHelp(); return false;">
+			<span class="akion-help"></span>
+			Show / hide help
+		</button>
+	</div>
+
 	<div class="akeeba-container--50-50">
 
 		<!-- Site parameters -->

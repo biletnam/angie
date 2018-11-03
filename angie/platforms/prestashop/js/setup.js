@@ -10,39 +10,67 @@ var setupDefaultTmpDir = '';
 var setupDefaultLogsDir = '';
 
 /**
+ * Toggles the help text on the page.
+ *
+ * By default we hide the help text underneath each field because it makes the page look busy. When the user clicks on
+ * the Show / hide help we make it appear. Click again, it disappears again.
+ */
+function toggleHelp()
+{
+	var elHelpTextAll = document.querySelectorAll('.akeeba-help-text');
+
+	for (var i = 0; i < elHelpTextAll.length; i++)
+	{
+		var elHelp = elHelpTextAll[i];
+
+		if (elHelp.style.display === 'none')
+		{
+			elHelp.style.display = 'block';
+
+			continue;
+		}
+
+		elHelp.style.display = 'none';
+	}
+}
+
+/**
  * Initialisation of the page
  */
-$(document).ready(function(){
-	// Enable tooltips
-	$('.help-tooltip').tooltip();
-	
-	$('div.navbar div.btn-group a:last').click(function(e){
+akeeba.System.documentReady(function () {
+	// Hook for the Next button
+	akeeba.System.addEventListener('btnNext', 'click', function (e) {
 		document.forms.setupForm.submit();
 		return false;
 	});
-	
-	$('#usesitedirs').click(function(e){
-		setupOverrideDirectories();
-	});
 });
 
-
+/**
+ * Runs whenever the Super User selection changes, displaying the correct SU's parameters on the page
+ *
+ * @param e
+ */
 function setupSuperUserChange(e)
 {
-	var saID = $('#superuserid').val();
+	var saID   = document.getElementById('superuserid').value;
 	var params = {};
 
-	$.each(setupSuperUsers, function(idx, sa){
-		if(sa.id == saID)
+	for (var idx = 0; idx < setupSuperUsers.length; idx++)
+	{
+		var sa = setupSuperUsers[idx];
+
+		if (sa.id === saID)
 		{
 			params = sa;
+
+			break;
 		}
-	});
-	
-	$('#superuseremail').val('');
-	$('#superuserpassword').val('');
-	$('#superuserpasswordrepeat').val('');
-	$('#superuseremail').val(params.email);
+	}
+
+	document.getElementById('superuseremail').value          = '';
+	document.getElementById('superuserpassword').value       = '';
+	document.getElementById('superuserpasswordrepeat').value = '';
+	document.getElementById('superuseremail').value          = params.email;
 }
 
 function openFTPBrowser()
