@@ -147,7 +147,7 @@ echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeeb
 </div>
 
 <div>
-    <button class="akeeba-btn--dark" style="float: right;" onclick="toggleHelp()">
+    <button class="akeeba-btn--dark" style="float: right;" onclick="toggleHelp(); return false;">
         <span class="akion-help"></span>
         Show / hide help
     </button>

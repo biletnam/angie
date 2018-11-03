@@ -10,6 +10,31 @@ var setupDefaultTmpDir  = '';
 var setupDefaultLogsDir = '';
 
 /**
+ * Toggles the help text on the page.
+ *
+ * By default we hide the help text underneath each field because it makes the page look busy. When the user clicks on
+ * the Show / hide help we make it appear. Click again, it disappears again.
+ */
+function toggleHelp()
+{
+	var elHelpTextAll = document.querySelectorAll('.akeeba-help-text');
+
+	for (var i = 0; i < elHelpTextAll.length; i++)
+	{
+		var elHelp = elHelpTextAll[i];
+
+		if (elHelp.style.display === 'none')
+		{
+			elHelp.style.display = 'block';
+
+			continue;
+		}
+
+		elHelp.style.display = 'none';
+	}
+}
+
+/**
  * Initialisation of the page
  */
 akeeba.System.documentReady(function () {
