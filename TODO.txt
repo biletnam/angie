@@ -19,13 +19,13 @@ If a deprecated site type or installed is used, revert to Generic script type at
 [DONE] Off-site folders (common)
 [DONE] Finished
 
-Joomla!
+[DONE] Joomla!
 ========================================================================================================================
 [DONE] Pre-installation
 [DONE] Database restoration (common)
 [DONE] Off-site folders (common)
 [DONE] Site Setup
-Finished
+[DONE] Finished
 
 PrestaShop
 ========================================================================================================================
