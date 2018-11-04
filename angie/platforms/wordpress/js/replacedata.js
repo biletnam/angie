@@ -33,7 +33,7 @@ replacements.start = function () {
 		'replaceFrom':  document.getElementById('replaceFrom').value,
 		'replaceTo':    document.getElementById('replaceTo').value,
 		'extraTables':  document.getElementById('extraTables').value,
-		'column_size':  document.getElementById('column_size').value,
+		//'column_size':  document.getElementById('column_size').value,
 		'batchSize':    document.getElementById('batchSize').value,
 		'min_exec':     document.getElementById('min_exec').value,
 		'max_exec':     document.getElementById('max_exec').value,
@@ -84,7 +84,7 @@ replacements.process = function (data) {
 
 	var elBlinkenLights = document.getElementById('blinkenlights');
 	var blinkenSpans    = elBlinkenLights.querySelectorAll('span');
-	elBlinkenLights.appendChild(blinkenSpans);
+	elBlinkenLights.appendChild(blinkenSpans[0]);
 	document.getElementById('replacementsProgressText').innerText = data.msg;
 
 	if (!data.more)
