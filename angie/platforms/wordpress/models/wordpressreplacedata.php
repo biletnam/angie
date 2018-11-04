@@ -417,7 +417,7 @@ class AngieModelWordpressReplacedata extends AModel
 
 		$timer->resetTime();
 
-		while ($timer->getTimeLeft())
+		while ($timer->getTimeLeft() > 0)
 		{
 			// Run a single step
 			$status = $engine->tick();
