@@ -25,6 +25,17 @@ replacements.start = function () {
 	document.getElementById('replacementsGUI').style.display      = 'none';
 	document.getElementById('replacementsProgress').style.display = 'block';
 
+	var elExtraTables = document.getElementById('extraTables');
+	var extraTables   = [];
+
+	for (var i = 0; i < elExtraTables.length; i++)
+	{
+		if (elExtraTables.options[i].selected)
+		{
+			extraTables.push(elExtraTables.options[i].value);
+		}
+	}
+
 	var request = {
 		'view':         'replacedata',
 		'task':         'ajax',
@@ -32,7 +43,7 @@ replacements.start = function () {
 		'format':       'json',
 		'replaceFrom':  document.getElementById('replaceFrom').value,
 		'replaceTo':    document.getElementById('replaceTo').value,
-		'extraTables':  document.getElementById('extraTables').value,
+		'extraTables':  extraTables,
 		//'column_size':  document.getElementById('column_size').value,
 		'batchSize':    document.getElementById('batchSize').value,
 		'min_exec':     document.getElementById('min_exec').value,

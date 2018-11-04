@@ -415,6 +415,8 @@ class AngieModelWordpressReplacedata extends AModel
 		$warnings = [];
 		$error    = null;
 
+		$timer->resetTime();
+
 		while ($timer->getTimeLeft())
 		{
 			// Run a single step
