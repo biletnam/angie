@@ -5,35 +5,44 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL v3 or later
  */
 
-var steps = ['updatehtaccess'];
+var steps        = ['updatehtaccess'];
 var akeebaAjaxWP = null;
-var totalSteps = steps.length;
+var totalSteps   = steps.length;
 
 function runStep(curStep)
 {
-	$('#step' + curStep).addClass('label-info');
+	var stepId = 'step' + curStep;
+	var elStep = document.getElementById(stepId);
+
+	akeeba.System.removeClass(elStep, 'akeeba-label--grey');
+	akeeba.System.addClass(elStep, 'akeeba-label--teal');
 
 	akeebaAjaxWP.callJSON({
-		'view':			'finalise',
-		'task':			'ajax',
-		'method':		steps[curStep - 1],
-		'format':		'json'
-	}, function(){
-		$('#step' + curStep).removeClass('label-info').addClass('label-success');
+		'view':   'finalise',
+		'task':   'ajax',
+		'method': steps[curStep - 1],
+		'format': 'json'
+	}, function () {
+		akeeba.System.removeClass(elStep, 'akeeba-label--teal');
+		akeeba.System.addClass(elStep, 'akeeba-label--green');
 
 		if (curStep >= totalSteps)
 		{
-			$('#finalisationSteps').hide('slow');
-			$('#finalisationInterface').show();
+			document.getElementById('finalisationSteps').style.display = 'none';
+			document.getElementById('finalisationInterface').style.display = 'block';
 		}
 		else
 		{
-			setTimeout(function(){runStep(curStep + 1)}, 100);
+			setTimeout(function () {
+				runStep(curStep + 1)
+			}, 100);
 		}
 	});
 }
 
-$(document).ready(function(){
+akeeba.System.documentReady(function () {
 	akeebaAjaxWP = new akeebaAjaxConnector('index.php');
-	setTimeout(function(){runStep(0)}, 100);
+	setTimeout(function () {
+		runStep(0)
+	}, 100);
 });
