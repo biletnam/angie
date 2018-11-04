@@ -1,21 +1,22 @@
 <?php
 /**
- * @package angi4j
+ * @package   angi4j
  * @copyright Copyright (c)2009-2018 Nicholas K. Dionysopoulos / Akeeba Ltd
- * @author Nicholas K. Dionysopoulos - http://www.dionysopoulos.me
- * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL v3 or later
+ * @author    Nicholas K. Dionysopoulos - http://www.dionysopoulos.me
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL v3 or later
  */
 
 defined('_AKEEBA') or die();
 
 /** @var $this AView */
 
-$document = $this->container->application->getDocument();
+$platformJSFile = APATH_INSTALLATION . '/platform/js/main.js';
+$document       = $this->container->application->getDocument();
 
 $document->addScript('angie/js/json.js');
 $document->addScript('angie/js/ajax.js');
 
-if (file_exists(APATH_INSTALLATION . '/platform/js/main.js'))
+if (file_exists($platformJSFile) && (@filesize($platformJSFile) > 200))
 {
 	$document->addScript('platform/js/main.js');
 }
