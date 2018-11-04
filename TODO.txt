@@ -41,5 +41,5 @@ WordPress
 [DONE] Database restoration (common)
 [DONE] Off-site folders (common)
 [DONE] Site Setup
-Data Replace
+[DONE] Data Replace
 Finished

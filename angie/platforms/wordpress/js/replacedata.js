@@ -8,203 +8,203 @@
 var akeebaAjaxWP = null;
 
 replacements = {
-    resumeTimer:        null,
-    resume:
-        {
-            enabled:      true,
-            timeout:      10,
-            maxRetries:   3,
-            retry:        0,
-            showWarnings: 0
-        },
-	editor: {},
-	strings: {}
+	resumeTimer: null,
+	resume:
+				 {
+					 enabled:      true,
+					 timeout:      10,
+					 maxRetries:   3,
+					 retry:        0,
+					 showWarnings: 0
+				 },
+	editor:      {},
+	strings:     {}
 };
 
-replacements.start = function()
-{
-	$('#replacementsGUI').hide('fast');
-	$('#replacementsProgress').show('fast');
+replacements.start = function () {
+	document.getElementById('replacementsGUI').style.display      = 'none';
+	document.getElementById('replacementsProgress').style.display = 'block';
 
 	var request = {
-		'view':			'replacedata',
-		'task':			'ajax',
-		'method':		'init',
-		'format':		'json',
-		'replaceFrom':	$('#replaceFrom').val(),
-		'replaceTo':	$('#replaceTo').val(),
-		'extraTables':	$('#extraTables').val(),
-		'column_size':	$('#column_size').val(),
-		'batchSize':	$('#batchSize').val(),
-		'min_exec':		$('#min_exec').val(),
-		'max_exec':		$('#max_exec').val(),
-		'runtime_bias':	$('#runtime_bias').val()
+		'view':         'replacedata',
+		'task':         'ajax',
+		'method':       'init',
+		'format':       'json',
+		'replaceFrom':  document.getElementById('replaceFrom').value,
+		'replaceTo':    document.getElementById('replaceTo').value,
+		'extraTables':  document.getElementById('extraTables').value,
+		'column_size':  document.getElementById('column_size').value,
+		'batchSize':    document.getElementById('batchSize').value,
+		'min_exec':     document.getElementById('min_exec').value,
+		'max_exec':     document.getElementById('max_exec').value,
+		'runtime_bias': document.getElementById('runtime_bias').value
 	};
 
 	akeebaAjaxWP.callJSON(request,
-        replacements.process,
-        replacements.onError
-    );
+		replacements.process,
+		replacements.onError
+	);
 };
 
-replacements.process = function(data)
-{
-    // Do we have errors/warnings?
-    var error_message   = data.error;
-    var warning_messages = data.warnings;
+replacements.process = function (data) {
+	// Do we have errors/warnings?
+	var error_message    = data.error;
+	var warning_messages = data.warnings;
 
-    if (error_message !== undefined && error_message != '')
-    {
-        try
-        {
-            console.error('Got an error message');
-            console.log(error_message);
-        }
-        catch (e)
-        {
-        }
-
-        // Uh-oh! An error has occurred.
-        replacements.onError(error_message);
-
-        return;
-    }
-
-    if (warning_messages && warning_messages.length > 0)
+	if (error_message !== undefined && error_message != '')
 	{
-        try
-        {
-            console.warn('Got a warning message');
-            console.log(warning_messages);
-        }
-        catch (e)
-        {
-        }
+		try
+		{
+			console.error('Got an error message');
+			console.log(error_message);
+		}
+		catch (e)
+		{
+		}
 
-        replacements.onWarning(warning_messages);
-	}
-
-	$('#blinkenlights').append($('#blinkenlights span:first'));
-	$('#replacementsProgressText').text(data.msg);
-
-	if (!data.more)
-	{
-		window.location = $('#btnNext').attr('href');
+		// Uh-oh! An error has occurred.
+		replacements.onError(error_message);
 
 		return;
 	}
 
-	setTimeout(function(){replacements.step();}, 100);
+	if (warning_messages && warning_messages.length > 0)
+	{
+		try
+		{
+			console.warn('Got a warning message');
+			console.log(warning_messages);
+		}
+		catch (e)
+		{
+		}
+
+		replacements.onWarning(warning_messages);
+	}
+
+	var elBlinkenLights = document.getElementById('blinkenlights');
+	var blinkenSpans    = elBlinkenLights.querySelectorAll('span');
+	elBlinkenLights.appendChild(blinkenSpans);
+	document.getElementById('replacementsProgressText').innerText = data.msg;
+
+	if (!data.more)
+	{
+		window.location = document.getElementById('btnNext').href;
+
+		return;
+	}
+
+	setTimeout(function () {
+		replacements.step();
+	}, 100);
 };
 
-replacements.step = function()
-{
+replacements.step = function () {
 	akeebaAjaxWP.callJSON({
-		'view':			'replacedata',
-		'task':			'ajax',
-		'method':		'step',
-		'format':		'json'
-	},
-        replacements.process,
-        replacements.onError
-    );
+			'view':   'replacedata',
+			'task':   'ajax',
+			'method': 'step',
+			'format': 'json'
+		},
+		replacements.process,
+		replacements.onError
+	);
 };
 
 /**
  * Resume the data replacement step after an AJAX error has occurred.
  */
-replacements.resumeReplacement = function ()
-{
-    // Make sure the timer is stopped
-    replacements.resetRetryTimeoutBar();
+replacements.resumeReplacement = function () {
+	// Make sure the timer is stopped
+	replacements.resetRetryTimeoutBar();
 
-    // Hide error and retry panels
-    document.getElementById('error-panel').style.display = 'none';
-    document.getElementById('retry-panel').style.display = 'none';
+	// Hide error and retry panels
+	document.getElementById('error-panel').style.display = 'none';
+	document.getElementById('retry-panel').style.display = 'none';
 
-    // Show progress
-    document.getElementById('replacementsProgress').style.display = 'block';
+	// Show progress
+	document.getElementById('replacementsProgress').style.display = 'block';
 
-    // Restart the replacements
-    setTimeout(function(){replacements.step();}, 100);
+	// Restart the replacements
+	setTimeout(function () {
+		replacements.step();
+	}, 100);
 };
 
 /**
  * Resets the last response timer bar
  */
-replacements.resetRetryTimeoutBar = function ()
-{
-    clearInterval(replacements.resumeTimer);
+replacements.resetRetryTimeoutBar = function () {
+	clearInterval(replacements.resumeTimer);
 
-    document.getElementById('akeeba-retry-timeout').textContent = replacements.resume.timeout.toFixed(0);
+	document.getElementById('akeeba-retry-timeout').textContent = replacements.resume.timeout.toFixed(0);
 };
 
 /**
  * Starts the timer for the last response timer
  */
-replacements.startRetryTimeoutBar = function ()
-{
-    var remainingSeconds = replacements.resume.timeout;
+replacements.startRetryTimeoutBar = function () {
+	var remainingSeconds = replacements.resume.timeout;
 
-    replacements.resumeTimer = setInterval(function ()
-    {
-        remainingSeconds--;
-        document.getElementById('akeeba-retry-timeout').textContent = remainingSeconds.toFixed(0);
+	replacements.resumeTimer = setInterval(function () {
+		remainingSeconds--;
+		document.getElementById('akeeba-retry-timeout').textContent = remainingSeconds.toFixed(0);
 
-        if (remainingSeconds == 0)
-        {
-            clearInterval(replacements.resumeTimer);
-            replacements.resumeReplacement();
-        }
-    }, 1000);
+		if (remainingSeconds == 0)
+		{
+			clearInterval(replacements.resumeTimer);
+			replacements.resumeReplacement();
+		}
+	}, 1000);
 };
 
 /**
  * Cancel the automatic resumption of the replacement step after an AJAX error has occurred
  */
-replacements.cancelResume = function ()
-{
-    // Make sure the timer is stopped
-    replacements.resetRetryTimeoutBar();
+replacements.cancelResume = function () {
+	// Make sure the timer is stopped
+	replacements.resetRetryTimeoutBar();
 
-    // Kill the replacement
-    var errorMessage = document.getElementById('replacement-error-message-retry').innerHTML;
-    replacements.endWithError(errorMessage);
+	// Kill the replacement
+	var errorMessage = document.getElementById('replacement-error-message-retry').innerHTML;
+	replacements.endWithError(errorMessage);
 };
 
-replacements.onError = function (message)
-{
-    // If we are past the max retries, die.
-    if (replacements.resume.retry >= replacements.resume.maxRetries)
-    {
-        replacements.endWithError(message);
+replacements.onError = function (message) {
+	// If we are past the max retries, die.
+	if (replacements.resume.retry >= replacements.resume.maxRetries)
+	{
+		replacements.endWithError(message);
 
-        return;
-    }
+		return;
+	}
 
-    // Make sure the timer is stopped
-    replacements.resume.retry++;
-    replacements.resetRetryTimeoutBar();
+	// Make sure the timer is stopped
+	replacements.resume.retry++;
+	replacements.resetRetryTimeoutBar();
 
-    // Hide progress
-    document.getElementById('replacementsProgress').style.display  = 'none';
-    document.getElementById('error-panel').style.display           = 'none';
+	// Hide progress
+	document.getElementById('replacementsProgress').style.display = 'none';
+	document.getElementById('error-panel').style.display          = 'none';
 
-    // Setup and show the retry pane
-    document.getElementById('replacement-error-message-retry').textContent = message;
-    document.getElementById('retry-panel').style.display              = 'block';
+	// Setup and show the retry pane
+	document.getElementById('replacement-error-message-retry').textContent = message;
+	document.getElementById('retry-panel').style.display                   = 'block';
 
-    // Start the countdown
-    replacements.startRetryTimeoutBar();
+	// Start the countdown
+	replacements.startRetryTimeoutBar();
 };
 
-replacements.onWarning = function(messages)
-{
-    document.getElementById('warning-panel').style.display = 'block';
+replacements.onWarning = function (messages) {
+	document.getElementById('warning-panel').style.display = 'block';
 
-    $.each(messages, function (index, message) {
-        $('<div></div>').html(message).appendTo('#warnings-list');
-    });
+	for (var index = 0; index < messages.length; index++)
+	{
+		var message     = messages[index];
+		var elDiv       = document.createElement('div');
+		elDiv.innerHTML = message;
+		document.getElementById('warnings-list').appendChild(elDiv);
+	}
 };
 
 /**
@@ -212,32 +212,33 @@ replacements.onWarning = function(messages)
  *
  * @param   message  The error message received
  */
-replacements.endWithError = function (message)
-{
-    // Hide progress
-    document.getElementById('replacementsProgress').style.display  = 'none';
-    document.getElementById('retry-panel').style.display           = 'none';
+replacements.endWithError = function (message) {
+	// Hide progress
+	document.getElementById('replacementsProgress').style.display = 'none';
+	document.getElementById('retry-panel').style.display          = 'none';
 
-    // Setup and show error pane
-    document.getElementById('replacement-error-message').textContent = message;
-    document.getElementById('error-panel').style.display        = 'block';
+	// Setup and show error pane
+	document.getElementById('replacement-error-message').textContent = message;
+	document.getElementById('error-panel').style.display             = 'block';
 };
 
-replacements.editor.render = function(selector, data)
-{
+replacements.editor.render = function (containerId, keyValueData) {
 	// Get the row container from the selector
-	var elContainer = $(selector);
+	var elContainer = document.getElementById(containerId);
 
 	// Store the key-value information as a data property
-	elContainer.data(elContainer, 'keyValueData', data);
+	akeeba.System.data.set(elContainer, 'keyValueData', keyValueData);
 
 	// Render one GUI row per data row
-	for (var valFrom in data)
+	for (var valFrom in keyValueData)
 	{
 		// Skip if the key is a property from the object's prototype
-		if (!data.hasOwnProperty(valFrom)) continue;
+		if (!keyValueData.hasOwnProperty(valFrom))
+		{
+			continue;
+		}
 
-		var valTo = data[valFrom];
+		var valTo = keyValueData[valFrom];
 
 		replacements.editor.renderRow(elContainer, valFrom, valTo);
 	}
@@ -246,150 +247,163 @@ replacements.editor.render = function(selector, data)
 	replacements.editor.renderRow(elContainer, "", "");
 };
 
-replacements.editor.renderRow = function(elContainer, valFrom, valTo)
-{
-	var elRow = $("<div />").addClass("keyValueLine row-fluid");
+replacements.editor.renderRow = function (elContainer, valFrom, valTo) {
+	var elRow       = document.createElement('div');
+	elRow.className = 'keyValueLine akeeba-container--5-5-2';
 
-	var elFromInput = $("<input />")
-		.addClass("input-large input-100 keyValueFrom")
-		.attr("type", "text")
-		.attr("title", replacements.strings["lblKey"])
-		.attr("placeholder", replacements.strings["lblKey"])
-		.val(valFrom);
+	var elFromInput         = document.createElement("input");
+	elFromInput.className   = "input-100 keyValueFrom";
+	elFromInput.type        = 'text';
+	elFromInput.title       = replacements.strings["lblKey"];
+	elFromInput.placeholder = replacements.strings["lblKey"];
+	elFromInput.value       = valFrom;
 
-	var elToInput = $("<input />")
-	.addClass("input-large input-100 keyValueTo")
-		.attr("type", "text")
-		.attr("title", replacements.strings["lblValue"])
-		.attr("placeholder", replacements.strings["lblValue"])
-		.val(valTo);
+	var elToInput         = document.createElement("input");
+	elToInput.className   = "input-100 keyValueTo";
+	elToInput.type        = 'text';
+	elToInput.title       = replacements.strings["lblValue"];
+	elToInput.placeholder = replacements.strings["lblValue"];
+	elToInput.value       = valTo;
 
-	var elDeleteIcon = $("<span />")
-		.addClass("icon icon-white icon-trash");
+	var elDeleteIcon       = document.createElement("span");
+	elDeleteIcon.className = 'akion-trash-b';
 
-	var elDeleteButton = $("<span />")
-		.addClass("btn btn-danger keyValueButtonDelete")
-		.addClass("title", replacements.strings["lblDelete"])
-	    .append(elDeleteIcon);
+	var elDeleteButton       = document.createElement("span");
+	elDeleteButton.className = 'akeeba-btn--red keyValueButtonDelete';
+	elDeleteButton.title     = replacements.strings["lblDelete"];
+	elDeleteButton.appendChild(elDeleteIcon);
 
-	var elUpIcon = $("<span />")
-		.addClass("icon icon-arrow-up");
+	var elUpIcon       = document.createElement("span");
+	elUpIcon.className = 'akion-chevron-up';
 
-	var elUpButton = $("<span />")
-		.addClass("btn btn-small keyValueButtonUp")
-	    .append(elUpIcon);
+	var elUpButton       = document.createElement("span");
+	elUpButton.className = 'akeeba-btn--grey keyValueButtonUp';
+	elUpButton.appendChild(elUpIcon);
 
-	var elDownIcon = $("<span />")
-		.addClass("icon icon-arrow-down");
+	var elDownIcon       = document.createElement("span");
+	elDownIcon.className = 'akion-chevron-down';
 
-	var elDownButton = $("<span />")
-		.addClass("btn btn-small keyValueButtonDown")
-	    .append(elDownIcon);
+	var elDownButton       = document.createElement("span");
+	elDownButton.className = 'akeeba-btn--grey keyValueButtonDown';
+	elDownButton.appendChild(elDownIcon);
 
-	var elFromWrapper = $("<div />").addClass("span5 keyValueFromWrapper").append(elFromInput);
-	var elToWrapper = $("<div />").addClass("span5 keyValueToWrapper").append(elToInput);
-	var elButtonsWrapper = $("<div />").addClass("span2 keyValueButtonsWrapper")
-		.append(elDeleteButton)
-		.append(elUpButton)
-		.append(elDownButton);
+	var elFromWrapper       = document.createElement("div");
+	elFromWrapper.className = 'keyValueFromWrapper';
+	elFromWrapper.appendChild(elFromInput);
 
-	elFromInput.blur(function(e) {
+	var elToWrapper       = document.createElement("div");
+	elToWrapper.className = 'keyValueToWrapper';
+	elToWrapper.appendChild(elToInput);
+
+	var elButtonsWrapper       = document.createElement("div");
+	elButtonsWrapper.className = 'keyValueButtonsWrapper';
+	elButtonsWrapper.appendChild(elDeleteButton);
+	elButtonsWrapper.appendChild(elUpButton);
+	elButtonsWrapper.appendChild(elDownButton);
+
+	akeeba.System.addEventListener(elFromInput, 'blur', function (e) {
 		replacements.editor.reflow(elContainer);
 	});
 
-	elToInput.blur(function(e) {
+	akeeba.System.addEventListener(elToInput, 'blur', function (e) {
 		replacements.editor.reflow(elContainer);
 	});
 
-	elDeleteButton.click(function(e) {
-		elFromInput.val("");
-		elToInput.val("");
+	akeeba.System.addEventListener(elDeleteButton, 'click', function (e) {
+		elFromInput.value = '';
+		elToInput.value   = '';
+
 		replacements.editor.reflow(elContainer);
 	});
 
-	elUpButton.click(function(e) {
-		var elPrev = elRow.prev();
+	akeeba.System.addEventListener(elUpButton, 'click', function (e) {
+		var elPrev = this.parentElement.parentElement.previousSibling;
 
-		if (!elPrev.length)
+		if (elPrev === null)
 		{
 			return;
 		}
 
-		var elPrevFrom = elPrev.find('.keyValueFrom');
-		var elPrevTo = elPrev.find('.keyValueTo');
+		var elPrevFrom = elPrev.querySelectorAll(".keyValueFrom")[0];
+		var elPrevTo   = elPrev.querySelectorAll(".keyValueTo")[0];
 
-		var prevFrom = elPrevFrom.val();
-		var prevTo = elPrevTo.val();
+		var prevFrom = elPrevFrom.value;
+		var prevTo   = elPrevTo.value;
 
-		elPrevFrom.val(elFromInput.val());
-		elPrevTo.val(elToInput.val());
-		elFromInput.val(prevFrom);
-		elToInput.val(prevTo);
+		elPrevFrom.value  = elFromInput.value;
+		elPrevTo.value    = elToInput.value;
+		elFromInput.value = prevFrom;
+		elToInput.value   = prevTo;
 
 		replacements.editor.reflow(elContainer);
 	});
 
-	elDownButton.click(function(e) {
-		var elNext = elRow.next();
+	akeeba.System.addEventListener(elDownButton, 'click', function (e) {
+		var elNext = this.parentElement.parentElement.nextSibling;
 
-		if (!elNext.length)
+		if (elNext === null)
 		{
 			return;
 		}
 
-		var elNextFrom = elNext.find('.keyValueFrom');
-		var elNextTo = elNext.find('.keyValueTo');
+		var elNextFrom = elNext.querySelectorAll(".keyValueFrom")[0];
+		var elNextTo   = elNext.querySelectorAll(".keyValueTo")[0];
 
-		var nextFrom = elNextFrom.val();
-		var nextTo = elNextTo.val();
+		var nextFrom = elNextFrom.value;
+		var nextTo   = elNextTo.value;
 
-		elNextFrom.val(elFromInput.val());
-		elNextTo.val(elToInput.val());
-		elFromInput.val(nextFrom);
-		elToInput.val(nextTo);
+		elNextFrom.value  = elFromInput.value;
+		elNextTo.value    = elToInput.value;
+		elFromInput.value = nextFrom;
+		elToInput.value   = nextTo;
 
 		replacements.editor.reflow(elContainer);
 	});
 
-	elRow.append(elFromWrapper, elToWrapper, elButtonsWrapper);
-	elContainer.append(elRow);
+	elRow.appendChild(elFromWrapper);
+	elRow.appendChild(elToWrapper);
+	elRow.appendChild(elButtonsWrapper);
+	elContainer.appendChild(elRow);
 };
 
-replacements.editor.reflow = function(elContainer)
-{
-	var data = {};
-	var strFrom = "";
-	var strTo = "";
-	var elRows = elContainer.children();
+replacements.editor.reflow = function (elContainer) {
+	var data        = {};
+	var strFrom     = "";
+	var strTo       = "";
+	var elRows      = elContainer.querySelectorAll('div.keyValueLine');
 	var hasEmptyRow = false;
 
 	// Convert rows to a data object
-	$.each(elRows, function (idx, elRow) {
-		var $elRow = $(elRow);
-		var valFrom = $elRow.find('.keyValueFrom').val();
-		var valTo = $elRow.find('.keyValueTo').val();
+
+	for (var idx = 0; idx < elRows.length; idx++)
+	{
+		var elRow = elRows[idx];
+
+		var valFrom = elRow.querySelectorAll(".keyValueFrom")[0].value;
+		var valTo   = elRow.querySelectorAll(".keyValueTo")[0].value;
 
 		// If the From value is empty I may have to delete this row
 		if (valFrom === '')
 		{
-			if (idx < elRows.length)
-			{
-				// This is an empty From in a row other than the last. Remove it.
-				$elRow.remove();
-			}
-			else
+			if (idx === (elRows.length - 1))
 			{
 				// This is the last empty row. Do not remove and set the flag of having a last empty row.
 				hasEmptyRow = true;
+
+				continue;
 			}
 
-			return;
+
+			// This is an empty From in a row other than the last. Remove it.
+			elRow.parentNode.removeChild(elRow);
+
+			continue;
 		}
 
 		data[valFrom] = valTo;
 		strFrom += "\n" + valFrom;
 		strTo += "\n" + valTo;
-	});
+	}
 
 	// If I don't have a last empty row, create one
 	if (!hasEmptyRow)
@@ -398,20 +412,21 @@ replacements.editor.reflow = function(elContainer)
 	}
 
 	// Store the key-value information as a data property
-	elContainer.data(elContainer, 'keyValueData', data);
+	akeeba.System.data.set(elContainer, "keyValueData", data);
 
-	// Transfer the data to the textboxes
-	$("#replaceFrom").val(strFrom.replace(/^\s+/g, ""));
-	$("#replaceTo").val(strTo.replace(/^\s+/g, ""));
+	var elFrom = document.getElementById('replaceFrom');
+	var elTo   = document.getElementById('replaceTo');
+
+	elFrom.value = strFrom.replace(/^\s+/g, "");
+	elTo.value   = strTo.replace(/^\s+/g, "");
 };
 
 /**
  * Displays the Javascript powered key-value editor
  */
-replacements.showEditor = function ()
-{
-	var from = $('#replaceFrom').val().split("\n");
-	var to = $('#replaceTo').val().split("\n");
+replacements.showEditor = function () {
+	var from            = document.getElementById('replaceFrom').value.split("\n");
+	var to              = document.getElementById('replaceTo').value.split("\n");
 	var extractedValues = {};
 
 	for (var i = 0; i < Math.min(from.length, to.length); i++)
@@ -419,22 +434,28 @@ replacements.showEditor = function ()
 		extractedValues[from[i]] = to[i];
 	}
 
-	$("#textBoxEditor").hide();
-	$("#keyValueEditor").show();
-	replacements.editor.render('#keyValueContainer', extractedValues);
+	var editorContainer   = document.getElementById('keyValueEditor');
+	var textareaContainer = document.getElementById('textBoxEditor');
+
+	editorContainer.style.display   = "block";
+	textareaContainer.style.display = "none";
+	replacements.editor.render('keyValueContainer', extractedValues);
 };
 
-$(document).ready(function(){
+akeeba.System.documentReady(function () {
 	akeebaAjaxWP = new akeebaAjaxConnector('index.php');
+
 	// Hijack the Next button
-	$('#btnNext').click(function (e) {
-		setTimeout(function(){replacements.start();}, 100);
+	akeeba.System.addEventListener('btnNext', 'click', function (e) {
+		setTimeout(function () {
+			replacements.start();
+		}, 100);
 
 		return false;
 	});
 
-	$('#showAdvanced').click(function() {
-		$(this).hide();
-		$('#replaceThrottle').show();
+	akeeba.System.addEventListener('showAdvanced', 'click', function () {
+		document.getElementById('showAdvanced').style.display    = 'none';
+		document.getElementById('replaceThrottle').style.display = 'block';
 	});
 });

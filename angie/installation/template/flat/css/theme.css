@@ -203,3 +203,18 @@ ul.breadcrumb span.divider {
     margin-left: -5px;
     border-color: transparent transparent black transparent;
 }
+
+/**
+ * Replace Data page
+ */
+input.input-100 {
+    width: 100%;
+}
+
+div.keyValueLine {
+    margin-bottom: 0.5em;
+}
+
+div#blinkenlights {
+    margin-top: 0.5em;
+}
