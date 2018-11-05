@@ -338,11 +338,17 @@ class AngieModelWordpressReplacedata extends AModel
 		$min     = $this->input->getInt('min_exec', 0);
 		$session->set('replacedata.min_exec', $min);
 
-		// Make a Configuration object
+		/**
+		 * Make a Configuration object
+		 *
+		 * Output, backup and log file names are ignored since we use a null writer for them further down this method.
+		 * However, by using non-empty filenames we suppress warnings about not using these features from being
+		 * displayed to the users since *that* would confuse them.
+		 */
 		$configParams = [
-			'outputSQLFile'      => '',
-			'backupSQLFile'      => '',
-			'logFile'            => '',
+			'outputSQLFile'      => 'does_not_matter.sql',
+			'backupSQLFile'      => 'does_not_matter.sql',
+			'logFile'            => 'does_not_matter.log',
 			'liveMode'           => true,
 			'allTables'          => true,
 			'maxBatchSize'       => $this->input->getInt('batchSize', 100),
