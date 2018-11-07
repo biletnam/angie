@@ -63,7 +63,7 @@ akeeba.System.documentReady(function ()
 	databasePasswordMessage = '$dbPassMessage';
 	databasePrefixMessage = '$dbPrefixMessage';
 	
-	setTimeout('angieRestoreDefaultDatabaseOptions();', 500);
+	setTimeout(angieRestoreDefaultDatabaseOptions, 500);
 });
 
 JS
