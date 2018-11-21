@@ -369,9 +369,11 @@ class AngieModelWordpressReplacedata extends AModel
 		$bias  = $this->input->getInt('runtime_bias', 75);
 		$timer = new \Akeeba\Replace\Timer\Timer($max, $bias);
 
-		// Make a Database object
+		// Make a Database object and pass the existing connection
 		$dbOptions = $this->getDatabaseConnectionOptions();
-		$db        = Driver::getInstance($dbOptions);
+		$dbOptions['connection'] = $this->getDbo()->getConnection();
+
+		$db = Driver::getInstance($dbOptions);
 
 		// Create dummy writer objects
 		$logger = new NullLogger();
@@ -411,6 +413,10 @@ class AngieModelWordpressReplacedata extends AModel
 		{
 			throw new RuntimeException("Broken session: cannot unserialize the data replacement engine; the serialized data is corrupt.");
 		}
+
+		// Connection is automatically closed in the driver __destruct method. Since when we're here we already have a proper,
+		// valid connection, let's pass it to the engine, so it will avoid creating a new one
+		$engine->getDbo()->setConnection($this->getDbo()->getConnection());
 
 		// Prime the status with an error -- this is used if we cannot load a cached engine
 		$status = new PartStatus([
