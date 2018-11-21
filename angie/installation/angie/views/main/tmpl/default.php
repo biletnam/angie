@@ -57,7 +57,7 @@ echo $this->loadAnyTemplate('steps/buttons');
 <div class="well" style="text-align: center;">
 	<h1><?php echo AText::_('MAIN_HEADER_INITIALISING') ?></h1>
 	<p>
-		<img src="template/angie/img/loading_big.gif" />
+		<img src="template/flat/image/loading_small.gif" />
 	</p>
 	<p>
 		<?php echo AText::_('MAIN_LBL_INITIALISINGWAIT') ?>
