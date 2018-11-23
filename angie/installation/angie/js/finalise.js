@@ -45,14 +45,14 @@ function finaliseParseMessage(msg)
 {
 	if (msg === true)
 	{
-		open({
+		akeeba.Modal.open({
 			inherit: '#success-dialog',
 			width:   '80%'
 		});
 	}
 	else
 	{
-		open({
+		akeeba.Modal.open({
 			inherit: '#error-dialog',
 			width:   '80%'
 		});
@@ -68,7 +68,7 @@ function finaliseParseMessage(msg)
  */
 function finaliseError(error_message)
 {
-	open({
+	akeeba.Modal.open({
 		inherit: '#error-dialog',
 		width:   '80%'
 	});
