@@ -215,6 +215,11 @@ class ADownloadAdapterCurl extends ADownloadAdapterAbstract implements ADownload
 			return $strlen;
 		}
 
+		if (strpos($data, ':') === false)
+		{
+			return $strlen;
+		}
+
 		list($header, $value) = explode(': ', trim($data), 2);
 
 		$this->headers[$header] = $value;
