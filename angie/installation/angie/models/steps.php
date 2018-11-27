@@ -200,7 +200,9 @@ class AngieModelSteps extends AModel
 			return null;
 		}
 
-		$cursubstep = $this->container->input->getCmd('substep', null);
+		// We have to use the HTML filter, since the key could contain a forward slash
+		// e.g. virtual_folders/first_folder
+		$cursubstep = $this->container->input->getHtml('substep', null);
 
 		if(!in_array($cursubstep, $keys))
 		{
