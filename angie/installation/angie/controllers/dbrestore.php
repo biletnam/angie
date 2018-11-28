@@ -25,6 +25,7 @@ class AngieControllerDbrestore extends AController
 				'error'		=> AText::_('DATABASE_ERR_INVALIDKEY'),
 				'done'		=> 1,
 			);
+			@ob_clean();
 			echo json_encode($result);
 			return;
 		}
@@ -74,6 +75,7 @@ class AngieControllerDbrestore extends AController
 			);
 		}
 
+		@ob_clean();
 		echo json_encode($result);
 	}
 
@@ -103,6 +105,7 @@ class AngieControllerDbrestore extends AController
 			);
 		}
 
+		@ob_clean();
 		echo json_encode($result);
 	}
 }

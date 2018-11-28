@@ -41,6 +41,7 @@ class AngieControllerBaseSetup extends AController
         {
             $result['error'] = $msg;
 
+	        @ob_clean();
             echo json_encode($result);
         }
     }

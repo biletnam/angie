@@ -23,6 +23,7 @@ class AngieControllerOffsitedirs extends AController
 				'error'		=> AText::_('OFFSITEDIRS_ERR_INVALIDKEY'),
 				'done'		=> 1,
 			);
+			@ob_clean();
 			echo json_encode($result);
 			return;
 		}
@@ -48,6 +49,7 @@ class AngieControllerOffsitedirs extends AController
 			);
 		}
 
+		@ob_clean();
 		echo json_encode($result);
 	}
 
@@ -60,6 +62,7 @@ class AngieControllerOffsitedirs extends AController
         $model = $this->getThisModel();
         $dirs  = $model->getDirs();
 
+	    @ob_clean();
         echo json_encode((bool)count($dirs));
     }
 }

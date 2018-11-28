@@ -100,6 +100,7 @@ class AngieControllerWordpressReplacedata extends AController
 			];
 		}
 
+		@ob_clean();
 		echo json_encode($result);
 	}
 
@@ -119,6 +120,7 @@ class AngieControllerWordpressReplacedata extends AController
             $result = false;
         }
 
+	    @ob_clean();
         echo json_encode($result);
     }
 }

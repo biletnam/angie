@@ -19,6 +19,7 @@ class AngieControllerBaseMain extends AController
         $model = $this->getThisModel();
         $model->detectVersion();
 
+	    @ob_clean();
         echo json_encode(true);
     }
 

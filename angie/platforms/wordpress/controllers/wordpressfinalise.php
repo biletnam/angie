@@ -28,6 +28,7 @@ class AngieControllerWordpressFinalise extends AngieControllerBaseFinalise
 			}
 		}
 
+		@ob_clean();
 		echo json_encode($result);
 	}
 }

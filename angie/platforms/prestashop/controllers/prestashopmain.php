@@ -34,10 +34,12 @@ class AngieControllerPrestashopMain extends AngieControllerBaseMain
 
 			$this->container->session->saveData();
 
+			@ob_clean();
 			echo json_encode(true);
 		}
 		else
 		{
+			@ob_clean();
 			echo json_encode(false);
 		}
 	}

@@ -239,6 +239,7 @@ class ADispatcher
 			// For json, don't use normal 403 page, but a json encoded message
 			if ($this->input->get('format', '') == 'json')
 			{
+				@ob_clean();
 				echo json_encode(array('code' => '403', 'error' => $this->getError()));
 				exit();
 			}
