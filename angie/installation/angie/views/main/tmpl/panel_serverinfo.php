@@ -7,6 +7,8 @@
  */
 
 /** @var  AngieViewMain  $this */
+
+$version = $this->joomlaVersion ? $this->joomlaVersion : $this->version;
 ?>
 <div class="akeeba-panel--info">
     <header class="akeeba-block-header">
@@ -19,7 +21,7 @@
             <td>
                 <label><?php echo AText::_('MAIN_LBL_SITE_JOOMLA') ?></label>
             </td>
-            <td><?php echo property_exists($this, 'joomlaVersion') ? $this->joomlaVersion : $this->version ?></td>
+            <td><?php echo $version ?></td>
         </tr>
         <tr>
             <td>
