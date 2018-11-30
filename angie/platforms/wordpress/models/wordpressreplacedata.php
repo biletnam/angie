@@ -369,9 +369,16 @@ class AngieModelWordpressReplacedata extends AModel
 		$bias  = $this->input->getInt('runtime_bias', 75);
 		$timer = new \Akeeba\Replace\Timer\Timer($max, $bias);
 
-		// Make a Database object and pass the existing connection
-		$dbOptions = $this->getDatabaseConnectionOptions();
+		/**
+		 * Make a Database object and pass the existing connection.
+		 *
+		 * We set a blank username and password to prevent the Akeeba Replace DB driver from reconnecting without
+		 * using our custom connection.
+		 */
+		$dbOptions               = $this->getDatabaseConnectionOptions();
 		$dbOptions['connection'] = $this->getDbo()->getConnection();
+		$dbOptions['user']       = '';
+		$dbOptions['password']   = '';
 
 		$db = Driver::getInstance($dbOptions);
 
@@ -407,6 +414,7 @@ class AngieModelWordpressReplacedata extends AModel
 			throw new RuntimeException("Broken session: cannot unserialize the data replacement engine; the serialized data is missing.");
 		}
 
+		/** @var Database $engine */
 		$engine = @unserialize($serializedEngine);
 
 		if (!is_object($engine) || !($engine instanceof Database))
@@ -414,8 +422,7 @@ class AngieModelWordpressReplacedata extends AModel
 			throw new RuntimeException("Broken session: cannot unserialize the data replacement engine; the serialized data is corrupt.");
 		}
 
-		// Connection is automatically closed in the driver __destruct method. Since when we're here we already have a proper,
-		// valid connection, let's pass it to the engine, so it will avoid creating a new one
+		// Upon unserialization the configured connection object is gone. So we need to reapply it here.
 		$engine->getDbo()->setConnection($this->getDbo()->getConnection());
 
 		// Prime the status with an error -- this is used if we cannot load a cached engine
