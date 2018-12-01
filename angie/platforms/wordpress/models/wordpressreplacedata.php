@@ -23,6 +23,17 @@ class AngieModelWordpressReplacedata extends AModel
 	/** @var ADatabaseDriver Reference to the database driver object */
 	private $db = null;
 
+	public function __construct(array $config = array(), AContainer $container = null)
+	{
+		parent::__construct($config, $container);
+
+		/**
+		 * Load the ANGIENullWriter class, used with the Akeeba Replace engine to suppress warnings about lack of
+		 * backups.
+		 */
+		require_once __DIR__ . '/nullwriter.php';
+	}
+
 	/**
 	 * Get a reference to the database driver object
 	 *
@@ -384,8 +395,8 @@ class AngieModelWordpressReplacedata extends AModel
 
 		// Create dummy writer objects
 		$logger = new NullLogger();
-		$output = new \Akeeba\Replace\Writer\NullWriter('');
-		$backup = new \Akeeba\Replace\Writer\NullWriter('');
+		$output = new ANGIENullWriter('/tmp/fake_out.sql');
+		$backup = new ANGIENullWriter('/tmp/fake_bak.sql');
 
 		// Create a memory information object
 		$memoryInfo = new MemoryInfo();
