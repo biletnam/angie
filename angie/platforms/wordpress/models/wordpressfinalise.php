@@ -76,7 +76,9 @@ class AngieModelWordpressFinalise extends AngieModelBaseFinalise
 		 */
 		$inSection = null;
 
-		if (strpos($contents, '# BEGIN WordPress') === false)
+		$beginMarkerFound = (strpos($contents, '# BEGIN WordPress') !== false) ||
+			(strpos($contents, '# BEGIN ClassicPress') !== false);
+		if ($beginMarkerFound)
 		{
 			$inSection = true;
 		}
@@ -93,7 +95,9 @@ class AngieModelWordpressFinalise extends AngieModelBaseFinalise
 			// If we are not inside the WordPress section look for the BEGIN signature
 			if (is_null($inSection))
 			{
-				if (strpos($line, '# BEGIN WordPress') === 0)
+				$beginMarkerFound = (strpos($contents, '# BEGIN WordPress') === 0) ||
+					(strpos($contents, '# BEGIN ClassicPress') === 0);
+				if ($beginMarkerFound)
 				{
 					$inSection = true;
 				}
@@ -101,7 +105,9 @@ class AngieModelWordpressFinalise extends AngieModelBaseFinalise
 			// If we are inside the WordPress section do the necessary manipulation
 			elseif ($inSection)
 			{
-				if (strpos($line, '# END WordPress') === 0)
+				$endMarkerFound = (strpos($contents, '# END WordPress') === 0) ||
+					(strpos($contents, '# END ClassicPress') === 0);
+				if ($endMarkerFound)
 				{
 					$inSection = false;
 				}
