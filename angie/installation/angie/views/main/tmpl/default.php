@@ -17,7 +17,7 @@ $document       = $this->container->application->getDocument();
 $document->addScript('angie/js/json.js');
 $document->addScript('angie/js/ajax.js');
 
-if (file_exists($platformJSFile) && (@filesize($platformJSFile) > 200))
+if (file_exists($platformJSFile) && (@filesize($platformJSFile) > 512))
 {
 	$document->addScript('platform/js/main.js');
 }
