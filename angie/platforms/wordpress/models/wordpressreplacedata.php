@@ -716,14 +716,125 @@ class AngieModelWordpressReplacedata extends AModel
 		return $replacements;
 	}
 
+	public function getDefaultURLReplacements()
+	{
+		$replacements = [];
+
+		/** @var AngieModelWordpressConfiguration $config */
+		$config = AModel::getAnInstance('Configuration', 'AngieModel', [], $this->container);
+
+		// Main site's URL
+		$newReplacements = $this->getDefaultReplacementsForMainSite($config, false);
+		$replacements    = array_merge($replacements, $newReplacements);
+
+		// Multisite's URLs
+		$newReplacements = $this->getDefaultReplacementsForMultisite($config);
+		$replacements    = array_merge($replacements, $newReplacements);
+
+		if (empty($replacements))
+		{
+			return [];
+		}
+
+		// Remove replacements where from is just a slash or empty
+		$temp = [];
+
+		foreach ($replacements as $from => $to)
+		{
+			$trimFrom = trim($from, '/\\');
+
+			if (empty($trimFrom))
+			{
+				continue;
+			}
+
+			$temp[$from] = $to;
+		}
+
+		$replacements = $temp;
+
+		if (empty($replacements))
+		{
+			return [];
+		}
+
+		// Find http[s]:// from/to and create replacements with just :// as the protocol
+		$temp = [];
+
+		foreach ($replacements as $from => $to)
+		{
+			$replaceFrom = ['http://', 'https://'];
+			$replaceTo   = ['://', '://'];
+			$from        = str_replace($replaceFrom, $replaceTo, $from);
+			$to          = str_replace($replaceFrom, $replaceTo, $to);
+			$temp[$from] = $to;
+		}
+
+		$replacements = $temp;
+
+		if (empty($replacements))
+		{
+			return [];
+		}
+
+		// Go through all replacements and create a RegEx variation
+		$temp = [];
+
+		foreach ($replacements as $from => $to)
+		{
+			$from        = $this->escape_string_for_regex($from);
+			$to          = $this->escape_string_for_regex($to);
+
+			if (array_key_exists($from, $replacements))
+			{
+				continue;
+			}
+
+			$temp[$from] = $to;
+		}
+
+		$replacements = array_merge_recursive($replacements, $temp);
+
+		// Return the resulting replacements table
+		return $replacements;
+	}
+
+	/**
+	 * Escapes a string so that it's a neutral string inside a regular expression.
+	 *
+	 * @param   string  $str  The string to escape
+	 *
+	 * @return  string  The escaped string
+	 */
+	protected function escape_string_for_regex($str)
+	{
+		//All regex special chars (according to arkani at iol dot pt below):
+		// \ ^ . $ | ( ) [ ]
+		// * + ? { } , -
+
+		$patterns = array(
+			'/\//', '/\^/', '/\./', '/\$/', '/\|/',
+			'/\(/', '/\)/', '/\[/', '/\]/', '/\*/', '/\+/',
+			'/\?/', '/\{/', '/\}/', '/\,/', '/\-/'
+		);
+
+		$replace = array(
+			'\/', '\^', '\.', '\$', '\|', '\(', '\)',
+			'\[', '\]', '\*', '\+', '\?', '\{', '\}', '\,', '\-'
+		);
+
+		return preg_replace($patterns, $replace, $str);
+	}
+
 	/**
 	 * Internal method to get the default replacements for the main site URL
 	 *
-	 * @param   AngieModelWordpressConfiguration $config The configuration model
+	 * @param   AngieModelWordpressConfiguration $config         The configuration model
+	 * @param   bool                             $absolutePaths  Include absolute filesystem paths
 	 *
 	 * @return  array  Any replacements to add
 	 */
-	private function getDefaultReplacementsForMainSite($config)
+	private function getDefaultReplacementsForMainSite($config, $absolutePaths = true)
 	{
 		$replacements = [];
 
@@ -741,7 +852,7 @@ class AngieModelWordpressReplacedata extends AModel
 		$mainModel  = AModel::getAnInstance('Main', 'AngieModel', [], $this->container);
 		$extra_info = $mainModel->getExtraInfo();
 
-		if (isset($extra_info['root']) && $extra_info['root'])
+		if (isset($extra_info['root']) && $extra_info['root'] && $absolutePaths)
 		{
 			$old_path = rtrim($extra_info['root']['current'], '/');
 			$new_path = rtrim(APATH_SITE, '/');
