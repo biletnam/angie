@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap="Tests/bootstrap.php"
+    beStrictAboutTestsThatDoNotTestAnything="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutTestSize="true"
+    colors="true"
+	backupGlobals="false"
+>
+	<testsuites>
+		<testsuite name="joomla">
+			<directory>Tests/Joomla</directory>
+		</testsuite>
+		<testsuite name="wordpress">
+			<directory>Tests/WordPress</directory>
+		</testsuite>
+	</testsuites>
+	<listeners>
+		<listener class="Akeeba\Angie\Tests\Base\TestListener" file="Tests/Base/TestListener.php" />
+	</listeners>
+</phpunit>
