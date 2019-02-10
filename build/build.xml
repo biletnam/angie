@@ -3,7 +3,7 @@
 	<import file="${phing.dir}/../../buildfiles/phing/common.xml" />
 
 	<property name="installers" value="angie" />
-	<property name="angie_installers" value="generic,joomla,prestashop,wordpress" />
+	<property name="angie_installers" value="generic,joomla,wordpress" />
 
 	<property name="dirs.translations" value="../translations"  />
 	<property name="angie.do_zip" value="0" />
