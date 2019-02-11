@@ -23,6 +23,30 @@ abstract class CommonSetup
 		self::recycleScreenshotsFolder();
 	}
 
+	public static function extractArchive($archive, $targetDir)
+	{
+		global $angieTestConfig;
+
+		$kickstart = $angieTestConfig['repositories']['kickstart'].'/output/kickstart.php';
+		$kickstart = realpath($kickstart);
+
+		$cmd  = $angieTestConfig['php']['cli'].' ';
+		$cmd .= escapeshellarg($kickstart).' ';
+		$cmd .= escapeshellarg($archive).' ';
+		$cmd .= escapeshellarg($targetDir);
+
+		$exit_code = null;
+		$output = [];
+
+		// Let's use Kickstart CLI interface to extract the archive
+		exec($cmd, $output, $exit_code);
+
+		if ($exit_code !== 0)
+		{
+			throw new \RuntimeException('Something went wrong during extraction process');
+		}
+	}
+
 	/**
 	 * Recycle the folder containing the screenshots
 	 *
