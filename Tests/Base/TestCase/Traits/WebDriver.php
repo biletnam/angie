@@ -44,13 +44,6 @@ trait WebDriver
 	protected static $siteRoot;
 
 	/**
-	 * The URL to the Akeeba Backup plugin page in WordPress. Automatically loaded from the test configuration.
-	 *
-	 * @var   string
-	 */
-	protected static $pluginURL;
-
-	/**
 	 * Setup a Web Driver connector
 	 *
 	 * @param   array                    $capabilities
@@ -73,8 +66,6 @@ trait WebDriver
 		}
 
 		self::$siteRoot = rtrim(self::$siteRoot, '/') . '/';
-
-		self::$pluginURL = self::$siteRoot . 'wp-admin/admin.php?page=akeebabackupwp%2Fakeebabackupwp.php';
 
 		$capabilities = array_merge([
 			WebDriverCapabilityType::BROWSER_NAME => WebDriverBrowserType::CHROME,

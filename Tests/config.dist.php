@@ -26,12 +26,19 @@ $angieTestConfig = [
 		'host'   => 'localhost',
 		'user'   => 'nuked',
 		'pass'   => 'nuked',
-		'name'   => 'nuked',
-		'prefix' => 'test_',
+		'name'   => 'nuked'
 	],
 
 	// Absolute filesystem path to the site's root
 	'root'            => '/var/www/guineapig',
 	// Absolute URL to the site's frontend
 	'url'             => 'http://localhost/guineapig/',
+
+	/**
+	 * Where you can find other code repositories we need to use to run certain tests
+	 */
+	'repositories' => [
+		// Akeeba Kickstart - used to extract test data
+		'kickstart' => __DIR__ . '/../../kickstart',
+	],
 ];

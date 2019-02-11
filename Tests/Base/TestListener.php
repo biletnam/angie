@@ -24,8 +24,6 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 	 * A test suite started.
 	 *
 	 * We hook onto this event to follow a different bootstrap process depending on the test suite currently running.
-	 * This is necessary since each Solo implementation runs under a different environment (standalone, WordPress,
-	 * PrestaShop, ...).
 	 *
 	 * @param   \PHPUnit_Framework_TestSuite $suite
 	 */
