@@ -30,25 +30,8 @@ $angieTestConfig = [
 		'prefix' => 'test_',
 	],
 
-	/**
-	 * Main ANGIE for Joomla aite configuration.
-	 *
-	 **/
-	'joomla'         => [
-		// Absolute filesystem path to the site's root
-		'root'            => '/var/www/guineapig',
-		// Absolute URL to the site's frontend
-		'url'             => 'http://localhost/guineapig/',
-	],
-
-	/**
-	 * Main WordPress test site configuration
-	 *
-	 */
-	'wordpress'    => [
-		// Absolute filesystem path to the site's root
-		'root'   => '/var/www/wpintegration',
-		// Absolute URL to the site's frontend
-		'url'    => 'http://wpintegration.local.web/',
-	],
+	// Absolute filesystem path to the site's root
+	'root'            => '/var/www/guineapig',
+	// Absolute URL to the site's frontend
+	'url'             => 'http://localhost/guineapig/',
 ];
