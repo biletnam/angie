@@ -20,19 +20,41 @@ $angieTestConfig = [
 		'phing' => '/usr/bin/phing',
 	],
 
-	// Database information for testing the installation. !!! ITS CONTENTS WILL BE REMOVED !!!
-	'test_restore_db' => [
-		'driver' => 'Mysqli',
-		'host'   => 'localhost',
-		'user'   => 'nuked',
-		'pass'   => 'nuked',
-		'name'   => 'nuked'
+	// Holds the data required for the restoration process
+	'angie' => [
+		// Database information for testing the installation. !!! ITS CONTENTS WILL BE REMOVED !!!
+		'test_restore_db' => [
+			'driver' => 'Mysqli',
+			'host'   => 'localhost',
+			'user'   => 'nuked',
+			'pass'   => 'nuked',
+			'name'   => 'nuked'
+		],
+
+		// Absolute filesystem path to the site's root
+		'root'            => '/var/www/html/angieintegration',
+		// Absolute URL to the site's frontend
+		'url'             => 'http://localhost/angieintegration/',
 	],
 
-	// Absolute filesystem path to the site's root
-	'root'            => '/var/www/guineapig',
-	// Absolute URL to the site's frontend
-	'url'             => 'http://localhost/guineapig/',
+	// These are the platforms that will backed up and ANGIE will try to restore automatically
+	// Please note that as for Solo integration tests, those sites should be full installations and not symlinked to dev
+	'testplatforms' => [
+		'solo'		=> [
+			'root'	=> '/var/www/html/solotestinstallation',
+			'url'   => 'http://localhost/guineapig/',
+		],
+
+		'wordpress'	=> [
+			'root'  => '/var/www/wpintegration',
+			'url'   => 'http://wpintegration.local.web/',
+		],
+
+		'joomla'	=> [
+			'root'  => '/var/www/joomla',
+			'url'   => 'http://localhost/joomla/',
+		],
+	],
 
 	/**
 	 * Where you can find other code repositories we need to use to run certain tests
