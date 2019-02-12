@@ -19,7 +19,7 @@ class Joomla
 	function __construct()
 	{
 		$this->getJoomlaPackages();
-		$this->getExtensionPackages();
+		//$this->getExtensionPackages();
 	}
 
 	/**

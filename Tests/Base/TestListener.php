@@ -7,6 +7,7 @@
 
 namespace Akeeba\ANGIE\Tests\Base;
 
+use Akeeba\ANGIE\Tests\Engine\Joomla;
 use RuntimeException;
 
 /**
@@ -62,6 +63,7 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 		}
 
 		$suiteName = strtolower($suiteName);
+		$platform  = null;
 
 		switch ($suiteName)
 		{
@@ -72,6 +74,13 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 				}
 
 				define('ANGIETESTS_JOOMLA', 1);
+
+				$platform = new Joomla();
+
+				if (empty($platform->packages))
+				{
+					throw new \RuntimeException("No Joomla! packages found. Please place the .zip full installation J! packages in the inbox directory.");
+				}
 
 				break;
 
@@ -85,6 +94,16 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 
 				break;
 
+			case 'solo':
+				if (defined('ANGIETESTS_SOLO'))
+				{
+					return;
+				}
+
+				define('ANGIETESTS_SOLO', 1);
+
+				break;
+
 			default:
 				throw new RuntimeException("Unknown test suite name '$suiteName'");
 				break;
@@ -94,25 +113,6 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 
 		// Finalize the bootstrap process
 		$this->boostrapFinalization($suiteName);
-	}
-
-	/**
-	 * Asserts the the site's directory exists and is readable
-	 *
-	 * @param   string $sitePath
-	 */
-	private function checkSiteDirectory($sitePath)
-	{
-		if (!is_dir($sitePath))
-		{
-			throw new RuntimeException("Site root path $sitePath does not exist");
-		}
-
-		if (!is_readable($sitePath))
-		{
-			throw new RuntimeException("Site root path $sitePath is not readable");
-		}
-
 	}
 
 	/**

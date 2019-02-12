@@ -5,13 +5,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU/GPL v3 or later
  */
 
-
 namespace Akeeba\ANGIE\Tests\Base\TestCase;
 
 use Akeeba\ANGIE\Tests\Base\TestCase\Traits\WebDriver;
 use PHPUnit\Framework\TestCase;
 
-class Solo extends TestCase
+class Angie extends TestCase
 {
 	use WebDriver;
 

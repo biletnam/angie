@@ -36,3 +36,4 @@ link_angie_site_davide.sh
 /Tests/config_*.php
 /Tests/screenshots/Joomla
 /Tests/screenshots/WordPress
+/Tests/inbox/*.zip

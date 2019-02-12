@@ -16,6 +16,6 @@
 		</testsuite>
 	</testsuites>
 	<listeners>
-		<listener class="Akeeba\Angie\Tests\Base\TestListener" file="Tests/Base/TestListener.php" />
+		<listener class="Akeeba\ANGIE\Tests\Base\TestListener" file="Tests/Base/TestListener.php" />
 	</listeners>
 </phpunit>
