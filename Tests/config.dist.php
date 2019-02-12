@@ -53,6 +53,12 @@ $angieTestConfig = [
 		'joomla'	=> [
 			'root'  => '/var/www/joomla',
 			'url'   => 'http://localhost/joomla/',
+			'db'	=> [
+				'host'   => 'localhost',
+				'user'   => 'nuked',
+				'pass'   => 'nuked',
+				'name'   => 'nuked'
+			]
 		],
 	],
 

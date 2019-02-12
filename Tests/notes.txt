@@ -1,0 +1,10 @@
+.:: Steps to be done for testing ::.
+
+- Check if original site is available
+	- If there isn't or the CMS version is not the latest delete and re-install it
+- Check if Akeeba Backup is installed or is the latest version
+	- If not, automatically build and install it
+- Take a new backup from the CLI
+- Copy it into the working ANGIE directory
+- Extract it using Kickstart from CLI
+- Start test suite
