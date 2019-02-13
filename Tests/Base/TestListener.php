@@ -7,7 +7,7 @@
 
 namespace Akeeba\ANGIE\Tests\Base;
 
-use Akeeba\ANGIE\Tests\Engine\Joomla;
+use Akeeba\ANGIE\Tests\Engine\Platform\Joomla;
 use RuntimeException;
 
 /**
