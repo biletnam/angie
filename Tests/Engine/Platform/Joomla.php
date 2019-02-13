@@ -30,7 +30,7 @@ class Joomla extends Base
 	{
 		$this->packages = [];
 
-		$inboxDir = __DIR__ . '/../inbox';
+		$inboxDir = __DIR__ . '/../../inbox';
 
 		$di = new \DirectoryIterator($inboxDir);
 
@@ -133,23 +133,18 @@ class Joomla extends Base
 	/**
 	 * Create a new Joomla! site
 	 *
-	 * @param string $package
-	 *
 	 * @throws \Exception
 	 */
-	public function createSite($package)
+	public function createSite()
 	{
 		global $angieTestConfig;
 
+		$package 	  = array_pop($this->packages);
 		$joomlaConfig = $angieTestConfig['testplatforms']['joomla'];
+		$siteRoot 	  = $joomlaConfig['root'];
+		$testsRoot 	  = realpath(__DIR__ . '/../../');
 
-		$siteRoot = $joomlaConfig['root'];
-
-		$testsRoot = realpath(__DIR__ . '/../');
-
-		/**/
 		// Kill the target directory and all its subdirectories
-		echo "    Creating site root\n";
 		if (is_dir($siteRoot))
 		{
 			if (!$this->recursiveRemoveDirectory($siteRoot))
@@ -164,7 +159,6 @@ class Joomla extends Base
 		}
 
 		// Extract the Joomla! ZIP archive
-		echo "    Extracting Joomla!\n";
 		$zip = new \ZipArchive();
 		$zip->open($testsRoot . '/inbox/' . $package);
 
@@ -178,7 +172,6 @@ class Joomla extends Base
 		unset($zip);
 
 		// Create a default .htaccess file
-		echo "    Creating .htaccess\n";
 		@copy($siteRoot . '/htaccess.txt', $siteRoot . '/.htaccess');
 
 		// Get a database driver
@@ -187,37 +180,26 @@ class Joomla extends Base
 			'user'     => $joomlaConfig['db']['user'],
 			'password' => $joomlaConfig['db']['pass'],
 			'prefix'   => 'test_',
-			'database' => 'integration',
+			'database' => 'joomlaintegration',
 		]);
 
 		// Create the database
-		echo "    Creating new database\n";
-		$this->populateDatabase($db, $testsRoot . '/assets/new_db.sql');
+		$this->populateDatabase($db, $testsRoot . '/_data/assets/joomla/new_db.sql');
 
-		$db->select('integration');
+		$db->select('joomlaintegration');
 
 		// Install Joomla! core tables
-		echo "    Installing core Joomla! tables\n";
 		$this->populateDatabase($db, $siteRoot . '/installation/sql/mysql/joomla.sql');
 
-		// Install sample data (Joomla! 3.x only)
-		if (file_exists($siteRoot . '/installation/sql/mysql/sample_data.sql'))
-		{
-			echo "    Installing sample data\n";
-			$this->populateDatabase($db, $siteRoot . '/installation/sql/mysql/sample_data.sql');
-		}
+		// Install sample data
+		$this->populateDatabase($db, $siteRoot . '/installation/sql/mysql/sample_data.sql');
 
 		// Install custom SQL
-		$isJoomla4 = file_exists($siteRoot . '/templates/cassiopeia/index.php');
-		// Install a different file when it's Joomla 4 because it does not support MD5 passwords
-		$file = $isJoomla4 ? 'new_user_j4.sql' : 'new_user_j3.sql';
-		echo "    Installing custom SQL\n";
-
-		$this->populateDatabase($db, $testsRoot . '/assets/' . $file);
+		$this->populateDatabase($db, $testsRoot . '/_data/assets/joomla/new_user_j3.sql');
 
 		// Create custom configuration.php
-		echo "    Creating configuration.php\n";
 		$siteUrlLive = rtrim($joomlaConfig['url'], '/');
+
 		// Joomla! + live_site on Windows doesn't work due to a Joomla! bug regarding DIRECTORY_SEPARATOR.
 		if (substr(PHP_OS, 0, 3) == 'WIN')
 		{
@@ -230,25 +212,21 @@ class Joomla extends Base
 			'LIVESITEURL' => $siteUrlLive,
 			'DBHOST'      => $dbHost,
 		];
-		$configText  = file_get_contents($testsRoot . '/assets/configuration.php');
+
+		$configText  = file_get_contents($testsRoot . '/_data/assets/joomla/configuration.php');
+
 		foreach ($replaceVars as $k => $v)
 		{
 			$configText = str_replace('##' . $k . '##', $v, $configText);
 		}
+
 		file_put_contents($siteRoot . '/configuration.php', $configText);
 
-		// Enable user registration
-		echo "    Enabling user registration\n";
-		$db->setQuery('UPDATE TABLE `test_extensions` SET `params` = \'{"allowUserRegistration":"1","new_usertype":"2","guest_usergroup":"9","sendpassword":"1","useractivation":"1","mail_to_admin":"0","captcha":"","frontend_userparams":"1","site_language":"0","change_login_name":"0","reset_count":"10","reset_time":"1","minimum_length":"4","minimum_integers":"0","minimum_symbols":"0","minimum_uppercase":"0","save_history":"1","history_limit":5,"mailSubjectPrefix":"","mailBodySuffix":""}\' WHERE `element` = \'com_users\'');
-		$db->query();
-
 		// Disable the Debug module
-		echo "    Disable the debug module\n";
 		$db->setQuery('UPDATE TABLE `test_extensions` SET `enabled`=0 WHERE `element` = \'debug\'');
 		$db->query();
 
 		// Delete the installation directory
-		echo "    Removing the installation directory\n";
 		if (!$this->recursiveRemoveDirectory($siteRoot . '/installation'))
 		{
 			throw new \Exception("Cannot delete directory {$siteRoot}/installation");

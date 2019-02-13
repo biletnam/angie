@@ -27,6 +27,8 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 	 * We hook onto this event to follow a different bootstrap process depending on the test suite currently running.
 	 *
 	 * @param   \PHPUnit_Framework_TestSuite $suite
+	 *
+	 * @throws \Exception
 	 */
 	public function startTestSuite(\PHPUnit_Framework_TestSuite $suite)
 	{
@@ -109,7 +111,12 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 				break;
 		}
 
-		$angieTestConfig['site'] = $angieTestConfig[strtolower($suiteName)];
+		$angieTestConfig['site'] = $angieTestConfig['testplatforms'][strtolower($suiteName)];
+
+		if (!file_exists($angieTestConfig['site']['root']))
+		{
+			$platform->createSite();
+		}
 
 		// Finalize the bootstrap process
 		$this->boostrapFinalization($suiteName);

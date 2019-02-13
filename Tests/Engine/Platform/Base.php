@@ -22,11 +22,9 @@ abstract class Base
 	/**
 	 * Performs the required steps to actuall install a test site
 	 *
-	 * @param $package
-	 *
 	 * @return mixed
 	 */
-	abstract public function createSite($package);
+	abstract public function createSite();
 
 	/**
 	 * Recursively remove a directory and all its contents
