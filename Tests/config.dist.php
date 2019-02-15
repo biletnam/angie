@@ -68,5 +68,7 @@ $angieTestConfig = [
 	'repositories' => [
 		// Akeeba Kickstart - used to extract test data
 		'kickstart' => __DIR__ . '/../../kickstart',
+		'solo'		=> __DIR__ . '/../../solo',
+		'akeeba'	=> __DIR__ . '/../../backup'
 	],
 ];

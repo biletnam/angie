@@ -8,6 +8,9 @@
 namespace Akeeba\ANGIE\Tests\Engine\Platform;
 
 use Akeeba\ANGIE\Tests\Engine\Driver;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 
 class Joomla extends Base
 {
@@ -19,8 +22,26 @@ class Joomla extends Base
 
 	public function __construct()
 	{
+		global $angieTestConfig;
+
 		$this->getPlatformPackages();
-		//$this->getExtensionPackages();
+
+		$versionPath  = $angieTestConfig['testplatforms']['joomla']['root'];
+		$versionPath .= '/administrator/components/com_akeeba';
+
+		$this->versionPath = $versionPath;
+
+	}
+
+	protected function getRepoVersionPath()
+	{
+		global $angieTestConfig;
+
+		$repo = realpath($angieTestConfig['repositories']['akeeba']);
+
+		$version = $repo.'/component/backend/version.php';
+
+		return $version;
 	}
 
 	/**
@@ -63,73 +84,6 @@ class Joomla extends Base
 			$this->packages[$version] = $package;
 		}
 	}
-
-	protected function getExtensionPackages()
-	{
-		$this->extensions = [];
-
-		// Add Admin Tools Professional package
-		$di = new \DirectoryIterator(__DIR__ . '/../../../release');
-		/** @var \DirectoryIterator $file */
-		foreach ($di as $file)
-		{
-			if (!$file->isFile())
-			{
-				continue;
-			}
-
-			$package = $file->getFilename();
-
-			if (strpos($package, 'pkg_admintools') === false)
-			{
-				continue;
-			}
-
-			if (strpos($package, '-pro') !== false)
-			{
-				$this->extensions['atpro'] = $file->getRealPath();
-			}
-
-			if (strpos($package, '-core') !== false)
-			{
-				$this->extensions['atcore'] = $file->getRealPath();
-			}
-
-			continue;
-		}
-
-		// Add other discovered extensions
-		$inboxDir = __DIR__ . '/../inbox';
-
-		$di = new \DirectoryIterator($inboxDir);
-
-		/** @var \DirectoryIterator $file */
-		foreach ($di as $file)
-		{
-			if ($file->isDir())
-			{
-				continue;
-			}
-
-			if ($file->getExtension() != 'zip')
-			{
-				continue;
-			}
-
-			$package = $file->getFilename();
-
-			$parts = explode('_', $package);
-
-			if (strpos($parts[0], 'Joomla') !== false)
-			{
-				continue;
-			}
-
-			$name                    = 'ext' . md5(microtime(false));
-			$this->extensions[$name] = $file->getRealPath();
-		}
-	}
-
 	/**
 	 * Create a new Joomla! site
 	 *
@@ -233,66 +187,51 @@ class Joomla extends Base
 		}
 	}
 
-	/**
-	 * Login a user to the back-end
-	 *
-	 * @param Surfer $surfer          The surfer class we will log in with (holds the cookie jar)
-	 * @param array  $headers         Any HTTP headers you want to pass
-	 * @param string $username        The username to log in with, default is 'admin'
-	 * @param string $extraAdminQuery Extra URL query for the login page
-	 *
-	 * @return object
-	 */
-	public function login(Surfer &$surfer, array $headers = [], $username = 'admin', $extraAdminQuery = '')
+	public function login(RemoteWebDriver &$webDriver)
 	{
 		global $angieTestConfig;
 
-		// TODO Use the WebDriver instead of the custom Surfer
+		// Get the token
+		$url   = $angieTestConfig['site']['url'] . '/administrator/index.php';
 
-		/*// Get the token
-		$url   = $testConfiguration['site']['url'] . '/administrator/index.php' . $extraAdminQuery;
-		$token = $surfer->getLoginToken($url, $headers);
+		$webDriver->get($url);
 
-		// Log in
-		$data = [
-			'username' => $username,
-			'passwd'   => 'test',
-			'lang'     => '',
-			'option'   => 'com_login',
-			'task'     => 'login',
-			'return'   => base64_encode('index.php'),
-			$token     => 1,
-		];
+		$usernameField = $webDriver->findElement(WebDriverBy::id('mod-login-username'));
+		$usernameField->sendKeys('admin');
 
-		return $surfer->postForm($url, $data, false, $headers);*/
+		usleep(200000);
+
+		$passwordField = $webDriver->findElement(WebDriverBy::id('mod-login-password'));
+		$passwordField->sendKeys('test');
+
+		usleep(200000);
+
+		// Click the login button
+		$webDriver->findElement(WebDriverBy::className('login-button'))
+				  ->click();
+
+		// Wait until we are logged in
+		$webDriver->wait(10, 150)->until(
+			WebDriverExpectedCondition::titleContains('Control Panel')
+		);
 	}
 
-	public function installExtension(Surfer &$surfer, $zipPath, $tmpSubDir = 'atpro')
+	public function installExtension(RemoteWebDriver &$webDriver, $zipPath)
 	{
 		global $angieTestConfig;
 
-		// TODO Use the WebDriver instead of the custom Surfer
+		$this->login($webDriver);
 
-		return;
-
-		$siteRoot = $testConfiguration['site']['root'];
-		$tmpPath  = $siteRoot . '/tmp/' . $tmpSubDir;
+		$siteRoot = $angieTestConfig['site']['root'];
+		$tmpPath  = $siteRoot . '/tmp/akeeba';
 
 		// Make the temp directory
 		if (@is_dir($tmpPath))
 		{
 			$this->recursiveRemoveDirectory($tmpPath);
 		}
-		mkdir($tmpPath, 0755, true);
 
-		// If the ZIP path is a URL, download it to tmp
-		if ((substr($zipPath, 0, 8) == 'https://') || substr($zipPath, 0, 7) == 'http://')
-		{
-			$zipData = @file_get_contents($zipPath);
-			$zipPath = $siteRoot . '/tmp/extension.zip';
-			file_put_contents($zipPath, $zipData);
-			unset($zipData);
-		}
+		mkdir($tmpPath, 0755, true);
 
 		// Extract the extension ZIP file
 		$zip = new \ZipArchive();
@@ -301,28 +240,12 @@ class Joomla extends Base
 		$zip->close();
 		unset($zip);
 
-		// Get the token
-		$url   = $testConfiguration['site']['url'] . '/administrator/index.php?option=com_installer';
-		$token = $surfer->getInstallerToken($url);
-
-		// Install from URL
-		$url  .= '&view=install';
-		$data = [
-			'install_directory' => $testConfiguration['site']['root'] . '/tmp/' . $tmpSubDir,
-			'type'              => '',
-			'installtype'       => 'folder',
-			'task'              => 'install.install',
-			$token              => 1,
-		];
-
-		$ret = $surfer->postForm($url, $data);
+		$this->login($webDriver);
 
 		// Delete the temporary directory
 		if (@is_dir($tmpPath))
 		{
 			$this->recursiveRemoveDirectory($tmpPath);
 		}
-
-		return $ret;
 	}
 }

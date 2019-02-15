@@ -12,6 +12,42 @@ use Akeeba\ANGIE\Tests\Engine\Driver;
 
 abstract class Base
 {
+	/** @var string	Path to the version.php file on test site */
+	protected $versionPath;
+
+	/** @var string	Software that should be installed to run the instagration (ABWP, Solo or AB Joomla) */
+	protected $software;
+
+	/**
+	 * Checks if test site has Akeeba Backup installed and is updated to latest version
+	 */
+	public function akeebaNeedsInstall()
+	{
+		$this->assertConfigured();
+
+		// Missing file, extension not installed for sure
+		if (!file_exists($this->versionPath.'/version.php'))
+		{
+			return true;
+		}
+
+		// version.php mismatch? Must install the component.
+		$source = $this->getRepoVersionPath();
+
+		if (!is_file($source))
+		{
+			// Someone gave us a virgin repository?
+			throw new \RuntimeException('You must run phing in the build directory before running the tests.');
+		}
+
+		if (md5_file($source) != md5_file($this->versionPath.'/version.php'))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Searches for platform archives that should be used to install the test site
 	 *
@@ -22,9 +58,16 @@ abstract class Base
 	/**
 	 * Performs the required steps to actuall install a test site
 	 *
-	 * @return mixed
+	 * @return void
 	 */
 	abstract public function createSite();
+
+	/**
+	 * Returns the path to the version.php file inside the repository accordingly to the platform we need to backup
+	 *
+	 * @return string
+	 */
+	abstract protected function getRepoVersionPath();
 
 	/**
 	 * Recursively remove a directory and all its contents
@@ -178,5 +221,13 @@ abstract class Base
 		}
 
 		return $queries;
+	}
+
+	protected function assertConfigured()
+	{
+		if (!$this->versionPath)
+		{
+			throw new \RuntimeException('Missing path to Akeeba Backup version.php file');
+		}
 	}
 }

@@ -7,6 +7,7 @@
 
 namespace Akeeba\ANGIE\Tests\Base;
 
+use Akeeba\ANGIE\Tests\Base\TestCase\Traits\WebDriver;
 use Akeeba\ANGIE\Tests\Engine\Platform\Joomla;
 use RuntimeException;
 
@@ -21,6 +22,8 @@ use RuntimeException;
  */
 class TestListener extends \PHPUnit\Framework\BaseTestListener
 {
+	use WebDriver;
+
 	/**
 	 * A test suite started.
 	 *
@@ -116,6 +119,14 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 		if (!file_exists($angieTestConfig['site']['root']))
 		{
 			$platform->createSite();
+		}
+
+		self::setupWebDriver();
+
+		if ($platform->akeebaNeedsInstall())
+		{
+			// $zipPath = $platform->getExtensionZip();
+			$platform->installExtension(self::$wd, '');
 		}
 
 		// Finalize the bootstrap process
