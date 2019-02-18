@@ -9,6 +9,7 @@ namespace Akeeba\ANGIE\Tests\Engine\Platform;
 
 
 use Akeeba\ANGIE\Tests\Engine\Driver;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
 
 abstract class Base
 {
@@ -17,6 +18,14 @@ abstract class Base
 
 	/** @var string	Software that should be installed to run the instagration (ABWP, Solo or AB Joomla) */
 	protected $software;
+
+	protected $releasepath;
+
+	protected $releaseprefix;
+
+	protected $buildpath;
+
+	protected $buildaction = 'git';
 
 	/**
 	 * Checks if test site has Akeeba Backup installed and is updated to latest version
@@ -49,6 +58,35 @@ abstract class Base
 	}
 
 	/**
+	 * Searches and, if needed, builds the extension package required for the platform under test
+	 *
+	 * @return mixed
+	 */
+	public function getExtensionZip()
+	{
+		// The development release version (rev1234ABC where 1234ABC is the Git commit hash)
+		$devVersion = 'rev' . $this->getGitCommitHash();
+
+		// Find the installation package
+		$package = $this->findInstallationPackage($devVersion);
+
+		if (empty($package))
+		{
+			// If the package does not exist try to build it
+			$this->buildPackage();
+			$package = $this->findInstallationPackage($devVersion);
+		}
+
+		if (empty($package))
+		{
+			// Someone gave us a virgin repository?
+			throw new \RuntimeException("Package not found. You must run phing git in the build directory before running the tests.");
+		}
+
+		return realpath($package);
+	}
+
+	/**
 	 * Searches for platform archives that should be used to install the test site
 	 *
 	 * @return mixed
@@ -63,11 +101,137 @@ abstract class Base
 	abstract public function createSite();
 
 	/**
+	 * Logins inside the administrative area of the test platform
+	 *
+	 * @param RemoteWebDriver $webDriver
+	 *
+	 * @return mixed
+	 */
+	abstract public function login(RemoteWebDriver &$webDriver);
+
+	/**
+	 * Installs the package in the test platform
+	 *
+	 * @param RemoteWebDriver $webDriver
+	 * @param                 $zipPath
+	 *
+	 * @return mixed
+	 */
+	abstract public function installExtension(RemoteWebDriver &$webDriver, $zipPath);
+
+	/**
 	 * Returns the path to the version.php file inside the repository accordingly to the platform we need to backup
 	 *
 	 * @return string
 	 */
 	abstract protected function getRepoVersionPath();
+
+	/**
+	 * Find the appropriate installation package file
+	 *
+	 * @param   string  $version   Set to null to find any version. Otherwise specify the version you want found.
+	 *
+	 * @return  string|null  Path to the package file or null if it's not found
+	 */
+	public function findInstallationPackage($version = null)
+	{
+		$path   = $this->releasepath;
+		$prefix = $this->releaseprefix;
+		$suffix = getenv('AKEEBA_TESTS_USECORE') ? '-core' : '-pro';
+		$ret    = null;
+
+		// The release directory is not present
+		if (!is_dir($path))
+		{
+			return null;
+		}
+
+		// Try to find the right package
+		$di = new \DirectoryIterator($path);
+
+		foreach ($di as $file)
+		{
+			if (!$file->isFile())
+			{
+				continue;
+			}
+
+			if ($file->getExtension() != 'zip')
+			{
+				continue;
+			}
+
+			$fileName = $file->getBasename('.zip');
+
+			if (substr($fileName, 0, strlen($prefix)) != $prefix)
+			{
+				continue;
+			}
+
+			if (substr($fileName, -strlen($suffix)) != $suffix)
+			{
+				continue;
+			}
+
+			$pathname = $file->getPathname();
+
+			if (!is_null($version))
+			{
+				$parts = explode ('-', $fileName);
+
+				if ($version != $parts[1])
+				{
+					continue;
+				}
+			}
+
+			$ret      = $pathname;
+
+			break;
+		}
+
+		$di = null;
+
+		return $ret;
+	}
+
+	public function getGitCommitHash($force = false)
+	{
+		static $version = null;
+
+		if ($force || is_null($version))
+		{
+			$commandLine = 'git rev-parse --short HEAD';
+			$output      = '';
+			$cwd         = getcwd();
+			$buildDir    = realpath($this->buildpath);
+			chdir($buildDir);
+			exec($commandLine, $output);
+			chdir($cwd);
+
+			$version = strtoupper(trim(implode('', $output)));
+		}
+
+		return $version;
+	}
+
+	/**
+	 * Build the extension package
+	 */
+	public function buildPackage()
+	{
+		global $angieTestConfig;
+
+		$action      = $this->buildaction;
+		$commandLine = $angieTestConfig['php']['phing'] . " $action";
+		$buildDir    = realpath($this->buildpath);
+
+		$output = '';
+		$cwd    = getcwd();
+		chdir($buildDir);
+		exec($commandLine, $output);
+		chdir($cwd);
+	}
 
 	/**
 	 * Recursively remove a directory and all its contents

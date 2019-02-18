@@ -125,8 +125,8 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 
 		if ($platform->akeebaNeedsInstall())
 		{
-			// $zipPath = $platform->getExtensionZip();
-			$platform->installExtension(self::$wd, '');
+			$zipPath = $platform->getExtensionZip();
+			$platform->installExtension(self::$wd, $zipPath);
 		}
 
 		// Finalize the bootstrap process

@@ -30,7 +30,9 @@ class Joomla extends Base
 		$versionPath .= '/administrator/components/com_akeeba';
 
 		$this->versionPath = $versionPath;
-
+		$this->buildpath   = realpath($angieTestConfig['repositories']['akeeba'].'/build');
+		$this->releasepath = realpath($angieTestConfig['repositories']['akeeba'].'/release');
+		$this->releaseprefix = 'pkg_akeeba-';
 	}
 
 	protected function getRepoVersionPath()
@@ -220,8 +222,7 @@ class Joomla extends Base
 	{
 		global $angieTestConfig;
 
-		$this->login($webDriver);
-
+		$siteUrl  = $angieTestConfig['site']['url'];
 		$siteRoot = $angieTestConfig['site']['root'];
 		$tmpPath  = $siteRoot . '/tmp/akeeba';
 
@@ -241,6 +242,18 @@ class Joomla extends Base
 		unset($zip);
 
 		$this->login($webDriver);
+
+		$webDriver->get($siteUrl.'administrator/index.php?option=com_installer');
+		// We do not have the "Install from Web" tab, so the "Install from folder" tab is the second one
+		$webDriver->findElement(WebDriverBy::xpath('//*[@id="myTabTabs"]/li[2]/a'))->click();
+		$webDriver->findElement(WebDriverBy::id('install_directory'))->clear()->sendKeys($tmpPath);
+
+		$webDriver->findElement(WebDriverBy::id('installbutton_directory'))->click();
+
+		$webDriver->wait(10)->until(
+			WebDriverExpectedCondition::elementTextContains(
+				WebDriverBy::id('system-message-container'), 'Installation of the package was successful')
+		);
 
 		// Delete the temporary directory
 		if (@is_dir($tmpPath))
