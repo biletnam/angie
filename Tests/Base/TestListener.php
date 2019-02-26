@@ -116,6 +116,7 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 
 		$angieTestConfig['site'] = $angieTestConfig['testplatforms'][strtolower($suiteName)];
 
+		// No root file? Let's create the site, then
 		if (!file_exists($angieTestConfig['site']['root']))
 		{
 			$platform->createSite();
@@ -123,26 +124,18 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 
 		self::setupWebDriver();
 
+		// Let's check if we have to actually install Akeeba Backup on that site
 		if ($platform->akeebaNeedsInstall())
 		{
+			// Get the extension package (building it if required) and then install it
 			$zipPath = $platform->getExtensionZip();
 			$platform->installExtension(self::$wd, $zipPath);
 		}
 
-		// Finalize the bootstrap process
-		$this->boostrapFinalization($suiteName);
-	}
-
-	/**
-	 * Common finalization of the tests bootstrap process
-	 *
-	 * @param   string $suiteName The test suite name
-	 *
-	 * @return  void
-	 */
-	private function boostrapFinalization($suiteName)
-	{
-		// Perform the master setup (database tables and so on)
-		CommonSetup::masterSetup($suiteName);
+		// Check if we have a backup of such platform in our _data/archives folder. If not, trigger a CLI backup
+		if (!file_exists(__DIR__ . '/../_data/archives/'.strtolower($suiteName).'.jpa'))
+		{
+			$platform->takeCliBackup();
+		}
 	}
 }

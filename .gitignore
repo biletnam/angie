@@ -32,6 +32,7 @@ link_angie_site_davide.sh
 /angie/installation/template/flat/js/dropdown.min.js
 /angie/installation/template/flat/js/tabs.min.js
 
+/Tests/_data/archives/*
 /Tests/config.php
 /Tests/config_*.php
 /Tests/screenshots/Joomla

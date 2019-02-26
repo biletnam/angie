@@ -26,13 +26,16 @@ class Joomla extends Base
 
 		$this->getPlatformPackages();
 
-		$versionPath  = $angieTestConfig['testplatforms']['joomla']['root'];
-		$versionPath .= '/administrator/components/com_akeeba';
+		$root       = $angieTestConfig['testplatforms']['joomla']['root'];
+		$akeebaPath = $root.'/administrator/components/com_akeeba';
 
-		$this->versionPath = $versionPath;
-		$this->buildpath   = realpath($angieTestConfig['repositories']['akeeba'].'/build');
-		$this->releasepath = realpath($angieTestConfig['repositories']['akeeba'].'/release');
+		$this->platform      = 'joomla';
+		$this->versionPath   = $akeebaPath;
+		$this->buildpath     = realpath($angieTestConfig['repositories']['akeeba'].'/build');
+		$this->releasepath   = realpath($angieTestConfig['repositories']['akeeba'].'/release');
 		$this->releaseprefix = 'pkg_akeeba-';
+		$this->clipath       = $root.'/cli/akeeba-backup.php';
+		$this->backuppath    = $akeebaPath.'/backup';
 	}
 
 	protected function getRepoVersionPath()

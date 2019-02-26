@@ -19,6 +19,10 @@ abstract class Base
 	/** @var string	Software that should be installed to run the instagration (ABWP, Solo or AB Joomla) */
 	protected $software;
 
+	protected $clipath;
+
+	protected $backuppath;
+
 	protected $releasepath;
 
 	protected $releaseprefix;
@@ -26,6 +30,8 @@ abstract class Base
 	protected $buildpath;
 
 	protected $buildaction = 'git';
+
+	protected $platform;
 
 	/**
 	 * Checks if test site has Akeeba Backup installed and is updated to latest version
@@ -125,6 +131,44 @@ abstract class Base
 	 * @return string
 	 */
 	abstract protected function getRepoVersionPath();
+
+	public function takeCliBackup()
+	{
+		global $angieTestConfig;
+
+		if (!$this->clipath)
+		{
+			throw new \RuntimeException('Platform must specify the path for a CLI backup');
+		}
+
+		if (!$this->backuppath)
+		{
+			throw new \RuntimeException('Platform must specify the backup output');
+		}
+
+		$commandLine = $angieTestConfig['php']['cli'] . ' ' . $this->clipath;
+
+		$output = [];
+		exec($commandLine, $output);
+
+		$output = implode("\n", $output);
+
+		$files = glob($this->backuppath.'/*.jpa');
+
+		if (!$files)
+		{
+			throw new \RuntimeException("Could not find a backup archive. ");
+		}
+
+		$archive = $files[0];
+
+		$result = rename($archive, __DIR__.'/../../_data/archives/'.strtolower($this->platform).'.jpa');
+
+		if (!$result)
+		{
+			throw new \RuntimeException('An error occurred while copying backup archives on Test folder');
+		}
+	}
 
 	/**
 	 * Find the appropriate installation package file
