@@ -16,9 +16,6 @@ abstract class Base
 	/** @var string	Path to the version.php file on test site */
 	protected $versionPath;
 
-	/** @var string	Software that should be installed to run the instagration (ABWP, Solo or AB Joomla) */
-	protected $software;
-
 	protected $clipath;
 
 	protected $backuppath;
@@ -136,15 +133,7 @@ abstract class Base
 	{
 		global $angieTestConfig;
 
-		if (!$this->clipath)
-		{
-			throw new \RuntimeException('Platform must specify the path for a CLI backup');
-		}
-
-		if (!$this->backuppath)
-		{
-			throw new \RuntimeException('Platform must specify the backup output');
-		}
+		$this->assertConfigured();
 
 		$commandLine = $angieTestConfig['php']['cli'] . ' ' . $this->clipath;
 
@@ -179,6 +168,8 @@ abstract class Base
 	 */
 	public function findInstallationPackage($version = null)
 	{
+		$this->assertConfigured();
+
 		$path   = $this->releasepath;
 		$prefix = $this->releaseprefix;
 		$suffix = getenv('AKEEBA_TESTS_USECORE') ? '-core' : '-pro';
@@ -243,6 +234,8 @@ abstract class Base
 	{
 		static $version = null;
 
+		$this->assertConfigured();
+
 		if ($force || is_null($version))
 		{
 			$commandLine = 'git rev-parse --short HEAD';
@@ -265,6 +258,8 @@ abstract class Base
 	public function buildPackage()
 	{
 		global $angieTestConfig;
+
+		$this->assertConfigured();
 
 		$action      = $this->buildaction;
 		$commandLine = $angieTestConfig['php']['phing'] . " $action";
@@ -436,6 +431,36 @@ abstract class Base
 		if (!$this->versionPath)
 		{
 			throw new \RuntimeException('Missing path to Akeeba Backup version.php file');
+		}
+
+		if (!$this->clipath)
+		{
+			throw new \RuntimeException('Platform must specify the path for a CLI backup');
+		}
+
+		if (!$this->backuppath)
+		{
+			throw new \RuntimeException('Platform must specify the backup output');
+		}
+
+		if (!$this->platform)
+		{
+			throw new \RuntimeException('You must specify the platform of this class (ie Joomla, WordPress etc etc)');
+		}
+
+		if (!$this->buildpath)
+		{
+			throw new \RuntimeException('You must specify the buildpath for the software for this platform');
+		}
+
+		if (!$this->releasepath)
+		{
+			throw new \RuntimeException('You must specify the release path for the software for this platform');
+		}
+
+		if (!$this->releaseprefix)
+		{
+			throw new \RuntimeException('You must specify the release prefix (ie pkg_akeeba-) used by the software for this platform');
 		}
 	}
 }
