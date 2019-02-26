@@ -79,7 +79,7 @@
 			</fileset>
 		</jpa>
 
-		<copy file="${dirs.root}/angie/angie-${platform}.ini" tofile="${dirs.release}/jpa/angie-${platform}.ini" overwrite="true" />
+		<copy file="${dirs.root}/angie/angie-${platform}.json" tofile="${dirs.release}/jpa/angie-${platform}.json" overwrite="true" />
 	</target>
 
 	<target name="create-angie-installer-zip" description="Packages a single ANGIE installer into ZIP archive files">
@@ -93,7 +93,7 @@
 			</fileset>
 		</zipme>
 
-		<copy file="${dirs.root}/angie/angie-${platform}.ini" tofile="${dirs.release}/jpa/angie-${platform}.ini" overwrite="true" />
+		<copy file="${dirs.root}/angie/angie-${platform}.json" tofile="${dirs.release}/jpa/angie-${platform}.json" overwrite="true" />
 	</target>
 
 	<target name="create-installer-jpa" description="Packages a single installer into JPA files and copy to project dir">
@@ -122,8 +122,8 @@
 				<exclude name="installation/storagedata.dat" />
 			</fileset>
 		</jpa>
-		<copy file="${dirs.root}/${subdir}/${subdir}-joomla.ini" tofile="${dirs.release}/jpa/${subdir}.ini" overwrite="true" haltonerror="false" />
-		<copy file="${dirs.root}/${subdir}/${subdir}.ini" tofile="${dirs.release}/jpa/${subdir}.ini" overwrite="true" haltonerror="false" />
+		<copy file="${dirs.root}/${subdir}/${subdir}-joomla.json" tofile="${dirs.release}/jpa/${subdir}.json" overwrite="true" haltonerror="false" />
+		<copy file="${dirs.root}/${subdir}/${subdir}.json" tofile="${dirs.release}/jpa/${subdir}.json" overwrite="true" haltonerror="false" />
 	</target>
 
 	<target name="create-installer-zip" description="Packages a single installer into ZIP files and copy to project dir">
@@ -152,7 +152,7 @@
 				<exclude name="installation/storagedata.dat" />
 			</fileset>
 		</zipme>
-		<copy file="${dirs.root}/${subdir}/${subdir}-joomla.ini" tofile="${dirs.release}/jpa/${subdir}.ini" overwrite="true" haltonerror="false" />
-		<copy file="${dirs.root}/${subdir}/${subdir}.ini" tofile="${dirs.release}/jpa/${subdir}.ini" overwrite="true" haltonerror="false" />
+		<copy file="${dirs.root}/${subdir}/${subdir}-joomla.json" tofile="${dirs.release}/jpa/${subdir}.json" overwrite="true" haltonerror="false" />
+		<copy file="${dirs.root}/${subdir}/${subdir}.json" tofile="${dirs.release}/jpa/${subdir}.json" overwrite="true" haltonerror="false" />
 	</target>
 </project>
