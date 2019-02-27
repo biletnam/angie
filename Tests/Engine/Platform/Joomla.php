@@ -263,5 +263,8 @@ class Joomla extends Base
 		{
 			$this->recursiveRemoveDirectory($tmpPath);
 		}
+
+		// When we're done, let's visit the Control Page, so Akeeba Backup can setup some special properties
+		$webDriver->get($siteUrl.'administrator/index.php?option=com_akeeba');
 	}
 }

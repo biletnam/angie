@@ -122,14 +122,16 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 			$platform->createSite();
 		}
 
-		self::setupWebDriver();
-
 		// Let's check if we have to actually install Akeeba Backup on that site
 		if ($platform->akeebaNeedsInstall())
 		{
+			self::setupWebDriver();
+
 			// Get the extension package (building it if required) and then install it
 			$zipPath = $platform->getExtensionZip();
 			$platform->installExtension(self::$wd, $zipPath);
+
+			self::teardownWebDriver();
 		}
 
 		// Check if we have a backup of such platform in our _data/archives folder. If not, trigger a CLI backup
