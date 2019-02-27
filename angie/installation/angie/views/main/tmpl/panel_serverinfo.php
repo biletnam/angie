@@ -22,7 +22,7 @@ $version = $this->joomlaVersion ? $this->joomlaVersion : $this->version;
             <td>
                 <label><?php echo AText::_('MAIN_LBL_SITE_JOOMLA') ?></label>
             </td>
-            <td><?php echo $version ?></td>
+            <td class="angie-cms-version"><?php echo $version ?></td>
         </tr>
         <tr>
             <td>
