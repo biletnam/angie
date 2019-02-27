@@ -108,7 +108,7 @@ class AngieModelWordpressReplacedata extends AModel
 		// Core WordPress tables (single site)
 		$coreTables = [
 			'#__commentmeta', '#__comments', '#__links', '#__options', '#__postmeta', '#__posts',
-			'#__term_relationships', '#__term_taxonomy', '#__terms', '#__usermeta', '#__users',
+			'#__term_relationships', '#__term_taxonomy', '#__wp_termmeta', '#__terms', '#__usermeta', '#__users',
 		];
 
 		$db = $this->getDbo();
@@ -116,7 +116,7 @@ class AngieModelWordpressReplacedata extends AModel
 		// If we have a multisite installation we need to add the per-blog tables as well
 		if ($this->isMultisite())
 		{
-			$additionalTables = ['#__blogs', '#__site', '#__sitemeta', '#__blogmeta'];
+			$additionalTables = ['#__blogmeta', '#__blogs', '#__site', '#__sitemeta'];
 
 			/** @var AngieModelWordpressConfiguration $config */
 			$config     = AModel::getAnInstance('Configuration', 'AngieModel', [], $this->container);
