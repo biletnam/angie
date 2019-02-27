@@ -116,7 +116,7 @@ class AngieModelWordpressReplacedata extends AModel
 		// If we have a multisite installation we need to add the per-blog tables as well
 		if ($this->isMultisite())
 		{
-			$additionalTables = ['#__blogs', '#__site', '#__sitemeta'];
+			$additionalTables = ['#__blogs', '#__site', '#__sitemeta', '#__blogmeta'];
 
 			/** @var AngieModelWordpressConfiguration $config */
 			$config     = AModel::getAnInstance('Configuration', 'AngieModel', [], $this->container);
