@@ -23,7 +23,7 @@ class Angie extends TestCase
 
 		if (empty(static::$siteRoot))
 		{
-			static::$siteRoot = $angieTestConfig['site']['url'];
+			static::$siteRoot = $angieTestConfig['angie']['url'];
 		}
 
 		static::setupWebDriver();
