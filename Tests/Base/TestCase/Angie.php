@@ -15,43 +15,7 @@ class Angie extends TestCase
 	use WebDriver;
 
 	/**
-	 * Username for the Akeeba Solo admin user
-	 *
-	 * @var   string
-	 */
-	public static $username = 'admin';
-
-	/**
-	 * Password for the Akeeba Solo admin user
-	 *
-	 * @var   string
-	 */
-	public static $password = 'admin';
-
-	/**
-	 * Is this a WordPress test? Set up automatically using the static isWordPress() method.
-	 *
-	 * @var   bool
-	 */
-	public $isWordPress = false;
-
-	public function __construct($name = null, array $data = [], $dataName = '')
-	{
-		parent::__construct($name, $data, $dataName);
-
-		$this->isWordPress = static::isWordPress();
-	}
-
-	public static function isWordPress()
-	{
-		return false;
-	}
-
-	/**
 	 * Initialize the acceptance tests. Connects to the site's backend and logs in a user.
-	 *
-	 * @throws   \Exception
-	 * @throws   \Facebook\WebDriver\Exception\TimeOutException
 	 */
 	public static function setUpBeforeClass()
 	{
@@ -59,7 +23,7 @@ class Angie extends TestCase
 
 		if (empty(static::$siteRoot))
 		{
-			static::$siteRoot = $angieTestConfig['url'];
+			static::$siteRoot = $angieTestConfig['site']['url'];
 		}
 
 		static::setupWebDriver();

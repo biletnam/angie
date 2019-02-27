@@ -8,6 +8,7 @@
 namespace Akeeba\ANGIE\Tests\Engine\Platform;
 
 use Akeeba\ANGIE\Tests\Engine\Driver;
+use Akeeba\ANGIE\Tests\Engine\Helper\Utils;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
@@ -106,7 +107,7 @@ class Joomla extends Base
 		// Kill the target directory and all its subdirectories
 		if (is_dir($siteRoot))
 		{
-			if (!$this->recursiveRemoveDirectory($siteRoot))
+			if (!Utils::recursiveRemoveDirectory($siteRoot))
 			{
 				throw new \Exception("Cannot delete directory $siteRoot");
 			}
@@ -143,18 +144,18 @@ class Joomla extends Base
 		]);
 
 		// Create the database
-		$this->populateDatabase($db, $testsRoot . '/_data/assets/joomla/new_db.sql');
+		Utils::populateDatabase($db, $testsRoot . '/_data/assets/joomla/new_db.sql');
 
 		$db->select('joomlaintegration');
 
 		// Install Joomla! core tables
-		$this->populateDatabase($db, $siteRoot . '/installation/sql/mysql/joomla.sql');
+		Utils::populateDatabase($db, $siteRoot . '/installation/sql/mysql/joomla.sql');
 
 		// Install sample data
-		$this->populateDatabase($db, $siteRoot . '/installation/sql/mysql/sample_data.sql');
+		Utils::populateDatabase($db, $siteRoot . '/installation/sql/mysql/sample_data.sql');
 
 		// Install custom SQL
-		$this->populateDatabase($db, $testsRoot . '/_data/assets/joomla/new_user_j3.sql');
+		Utils::populateDatabase($db, $testsRoot . '/_data/assets/joomla/new_user_j3.sql');
 
 		// Create custom configuration.php
 		$siteUrlLive = rtrim($joomlaConfig['url'], '/');
@@ -186,7 +187,7 @@ class Joomla extends Base
 		$db->query();
 
 		// Delete the installation directory
-		if (!$this->recursiveRemoveDirectory($siteRoot . '/installation'))
+		if (!Utils::recursiveRemoveDirectory($siteRoot . '/installation'))
 		{
 			throw new \Exception("Cannot delete directory {$siteRoot}/installation");
 		}
@@ -232,7 +233,7 @@ class Joomla extends Base
 		// Make the temp directory
 		if (@is_dir($tmpPath))
 		{
-			$this->recursiveRemoveDirectory($tmpPath);
+			Utils::recursiveRemoveDirectory($tmpPath);
 		}
 
 		mkdir($tmpPath, 0755, true);
@@ -261,7 +262,7 @@ class Joomla extends Base
 		// Delete the temporary directory
 		if (@is_dir($tmpPath))
 		{
-			$this->recursiveRemoveDirectory($tmpPath);
+			Utils::recursiveRemoveDirectory($tmpPath);
 		}
 
 		// When we're done, let's visit the Control Page, so Akeeba Backup can setup some special properties
