@@ -67,6 +67,38 @@ abstract class Utils
 	}
 
 	/**
+	 * Calls ANGIE script to symlink the correct platform inside ANGIE repo
+	 *
+	 * @param   string  $platform
+	 */
+	public static function linkAngiePlatform($platform)
+	{
+		$commandLine = './link_platform.sh '.$platform;
+
+		$output = '';
+		$cwd    = getcwd();
+		chdir(__DIR__.'/../../../');
+		exec($commandLine, $output);
+		chdir($cwd);
+	}
+
+	/**
+	 * Calls ANGIE script to symlink current repository to test website
+	 *
+	 * @param   string  $path
+	 */
+	public static function linkAngieSite($path)
+	{
+		$commandLine = './link_angie_site.sh '.$path;
+
+		$output = '';
+		$cwd    = getcwd();
+		chdir(__DIR__.'/../../../');
+		exec($commandLine, $output);
+		chdir($cwd);
+	}
+
+	/**
 	 * Recursively remove a directory and all its contents
 	 *
 	 * @param $directory
@@ -99,6 +131,13 @@ abstract class Utils
 			}
 
 			$filePath = $directory . DIRECTORY_SEPARATOR . $item->getFilename();
+
+			if (is_link($filePath))
+			{
+				unlink($filePath);
+
+				continue;
+			}
 
 			if ($di->isDir())
 			{

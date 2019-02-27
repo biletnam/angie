@@ -8,6 +8,7 @@
 namespace Akeeba\ANGIE\Tests\Base;
 
 use Akeeba\ANGIE\Tests\Base\TestCase\Traits\WebDriver;
+use Akeeba\ANGIE\Tests\Engine\Helper\Utils;
 use Akeeba\ANGIE\Tests\Engine\Platform\Joomla;
 use RuntimeException;
 
@@ -99,13 +100,13 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 
 				break;
 
-			case 'solo':
-				if (defined('ANGIETESTS_SOLO'))
+			case 'generic':
+				if (defined('ANGIETESTS_GENERIC'))
 				{
 					return;
 				}
 
-				define('ANGIETESTS_SOLO', 1);
+				define('ANGIETESTS_GENERIC', 1);
 
 				break;
 
@@ -114,7 +115,10 @@ class TestListener extends \PHPUnit\Framework\BaseTestListener
 				break;
 		}
 
-		$angieTestConfig['site'] = $angieTestConfig['testplatforms'][strtolower($suiteName)];
+		$angieTestConfig['site'] = $angieTestConfig['testplatforms'][$suiteName];
+
+		// Let's be sure our ANGIE repo is currently using the correct platform
+		Utils::linkAngiePlatform($suiteName);
 
 		// No root file? Let's create the site, then
 		if (!file_exists($angieTestConfig['site']['root']))

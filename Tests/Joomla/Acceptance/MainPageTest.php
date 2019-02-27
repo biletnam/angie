@@ -23,6 +23,9 @@ class MainPageTest extends Angie
 		{
 			Utils::extractArchive(__DIR__.'/../../_data/archives/joomla.jpa', $angieTestConfig['angie']['root']);
 		}
+
+		// Always relink. It won't hurt and it's very fast to do
+		Utils::linkAngieSite($angieTestConfig['angie']['root']);
 	}
 
 	public function testMainPageLayout()
