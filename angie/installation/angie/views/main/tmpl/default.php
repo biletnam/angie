@@ -41,10 +41,10 @@ JS
 );
 
 $document->appendButton(
-	'GENERIC_BTN_STARTOVER', 'index.php?view=main&task=startover', 'red', 'fireball'
+	'GENERIC_BTN_STARTOVER', 'index.php?view=main&task=startover', 'red', 'fireball', 'startover'
 );
 $document->appendButton(
-	'GENERIC_BTN_RECHECK', 'javascript:mainGetPage();', 'orange', 'loop'
+	'GENERIC_BTN_RECHECK', 'javascript:mainGetPage();', 'orange', 'loop', 'checkagain'
 );
 
 echo $this->loadAnyTemplate('steps/buttons');
