@@ -37,6 +37,33 @@ abstract class Utils
 		}
 	}
 
+	/**
+	 * Deletes ANGIE session data stored inside the tmp directory
+	 */
+	public static function deleteAngieSessionData()
+	{
+		global $angieTestConfig;
+
+		// Temporary directory holding the session data is not symlinked
+		$folder = $angieTestConfig['angie']['root'].'/installation/tmp';
+		$di     = new DirectoryIterator($folder);
+
+		foreach ($di as $file)
+		{
+			// We're interested only in real files
+			if ($file->isDot() || $file->isDir() || $file->isLink())
+			{
+				continue;
+			}
+
+			// Remove only ANGIE session files
+			if (strpos($file->getFilename(), 'storagedata') === 0)
+			{
+				unlink($file->getPathname());
+			}
+		}
+	}
+
 	public static function extractArchive($archive, $targetDir)
 	{
 		global $angieTestConfig;
