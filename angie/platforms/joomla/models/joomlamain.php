@@ -137,7 +137,7 @@ class AngieModelJoomlaMain extends AngieModelBaseMain
 			);
 
 			$cW = (@ file_exists('../configuration.php') && @is_writable('../configuration.php')) || @is_writable('../');
-			$phpOptions[] = array (
+			$phpOptions['config-writable'] = array (
 				'label'		=> AText::_('MAIN_LBL_REQ_CONFIGURATIONPHP'),
 				'current'	=> $cW,
 				'notice'	=> $cW ? null : AText::_('MAIN_MSG_CONFIGURATIONPHP'),

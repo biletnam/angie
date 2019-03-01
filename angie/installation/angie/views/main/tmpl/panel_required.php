@@ -22,10 +22,10 @@
 		</tr>
 		</thead>
 		<tbody>
-		<?php foreach ($this->reqSettings as $option): ?>
-			<tr>
+		<?php foreach ($this->reqSettings as $key => $option): ?>
+			<tr id="required-settings-<?php echo $key ?>">
 				<td>
-					<label style="width:250px" class="label-<?php echo $option['current'] ? 'green' : ($option['warning'] ? 'orange' : 'error'); ?>">
+					<label style="width:250px">
 						<?php echo $option['label']; ?>
 					</label>
 					<?php if (array_key_exists('notice',$option) && $option['notice']): ?>
