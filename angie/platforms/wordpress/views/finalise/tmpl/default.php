@@ -129,7 +129,7 @@ echo $this->loadAnyTemplate('steps/steps', array('helpurl' => 'https://www.akeeb
 					<h3><?php echo AText::_('FINALISE_HEADER_SUCCESS') ?></h3>
 				</header>
 				<p>
-					<?php echo AText::sprintf('FINALISE_LBL_SUCCESS', 'https://www.akeebabackup.com/documentation/troubleshooter/prbasicts.html') ?>
+					<?php echo AText::sprintf('FINALISE_LBL_SUCCESS', 'https://www.akeebabackup.com/documentation/troubleshooter/prbasictswp.html') ?>
 				</p>
 				<a class="akeeba-btn--success" href="<?php echo AUri::base() . '../index.php' ?>">
 					<span class="akion-arrow-right-c"></span>

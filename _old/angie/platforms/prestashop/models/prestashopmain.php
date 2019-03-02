@@ -46,6 +46,38 @@ class AngieModelPrestashopMain extends AngieModelBaseMain
 			return $ret;
 		}
 
+		// In Prestashop 1.7.5 they changed AGAIN the location of the version... sigh
+		$app_kernel = APATH_ROOT . '/app/AppKernel.php';
+
+		// This file loads the whole application, so I can't include it, I have to parse the code
+		$contents = file_get_contents($app_kernel);
+
+		// Only newer version of PrestaShop have the version in the AppKernel file
+		if (stripos($contents, 'VERSION') !== false)
+		{
+			$lines = explode("\n", $contents);
+
+			foreach ($lines as $line)
+			{
+				$line = trim($line);
+
+				if (stripos($line, 'const VERSION') === false)
+				{
+					continue;
+				}
+
+				$parts   = explode('VERSION', $line);
+				$version = trim($parts[1], "= ');");
+
+				$ret = $version;
+
+				// No need for further processing
+				break;
+			}
+
+			return $ret;
+		}
+
 		// This file loads the whole application, so I can't include it, I have to parse the code
 		$contents = file_get_contents($filename);
 
