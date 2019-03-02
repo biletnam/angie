@@ -55,8 +55,7 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 		$options['user'] = (isset($options['user'])) ? $options['user'] : 'root';
 		$options['password'] = (isset($options['password'])) ? $options['password'] : '';
 		$options['database'] = (isset($options['database'])) ? $options['database'] : '';
-		$options['select'] = (isset($options['select'])) ? (bool) $options['select'] : true;
-		$options['driverOptions'] = (isset($options['driverOptions'])) ? (array) $options['driverOptions'] : array();
+		$options['port']     = isset($options['port']) ? $options['port'] : 5432;
 
 		// Finalize initialisation.
 		parent::__construct($options);
@@ -98,7 +97,6 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 			throw new \RuntimeException('PDO extension is not available.');
 		}
 
-		$this->options['port'] = $this->options['port'] ? $this->options['port'] : 5432;
 		$format = 'pgsql:host=#HOST#;port=#PORT#;dbname=#DBNAME#';
 		$replace = array('#HOST#', '#PORT#', '#DBNAME#');
 		$with = array($this->options['host'], $this->options['port'], $this->options['database']);
@@ -198,58 +196,6 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 		}
 
 		return true;
-	}
-
-	/**
-	 * Get the number of affected rows for the previous executed SQL statement.
-	 *
-	 * @return int The number of affected rows in the previous operation
-	 */
-	public function getAffectedRows()
-	{
-		if ($this->cursor instanceof \PDOStatement)
-		{
-			return $this->cursor->rowCount();
-		}
-
-		return 0;
-	}
-
-	/**
-	 * Get the number of returned rows for the previous executed SQL statement.
-	 *
-	 * @param   resource $cur An optional database cursor resource to extract the row count from.
-	 *
-	 * @return  integer   The number of returned rows.
-	 */
-	public function getNumRows($cur = null)
-	{
-		if ($cursor instanceof \PDOStatement)
-		{
-			return $cursor->rowCount();
-		}
-
-		if ($this->cursor instanceof \PDOStatement)
-		{
-			return $this->cursor->rowCount();
-		}
-
-		return 0;
-	}
-
-	/**
-	 * Get the version of the database connector.
-	 *
-	 * @return  string  The database connector version.
-	 */
-	public function getVersion()
-	{
-		if (!is_object($this->connection))
-		{
-			$this->connect();
-		}
-
-		return $this->connection->getAttribute(\PDO::ATTR_SERVER_VERSION);
 	}
 
 	/**
@@ -469,74 +415,36 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 	}
 
 	/**
-	 * Method to fetch a row from the result set cursor as an array.
+	 * Test to see if the PostgreSQL connector is available.
 	 *
-	 * @param   mixed $cursor The optional result set cursor from which to fetch the row.
-	 *
-	 * @return  mixed  Either the next row from the result set or false if there are no more rows.
+	 * @return  boolean  True on success, false otherwise.
 	 */
-	public function fetchArray($cursor = null)
+	public static function isSupported()
 	{
-		$ret = null;
-
-		if (!empty($cursor) && $cursor instanceof \PDOStatement)
-		{
-			$ret = $cursor->fetch(\PDO::FETCH_NUM);
-		}
-		elseif ($this->cursor instanceof \PDOStatement)
-		{
-			$ret = $this->cursor->fetch(\PDO::FETCH_NUM);
-		}
-
-		return $ret;
+		return defined('PDO::ATTR_DRIVER_NAME');
 	}
 
 	/**
-	 * Method to fetch a row from the result set cursor as an associative array.
-	 *
-	 * @param   mixed $cursor The optional result set cursor from which to fetch the row.
-	 *
-	 * @return  mixed  Either the next row from the result set or false if there are no more rows.
-	 */
-	public function fetchAssoc($cursor = null)
-	{
-		$ret = null;
+  * Method to fetch a row from the result set cursor as an associative array.
+  *
+  * @param   mixed  $cursor  The optional result set cursor from which to fetch the row.
+  *
+  * @return  mixed  Either the next row from the result set or false if there are no more rows.
+  *
+  * @since   1.0
+  */
+  public function fetchAssoc($cursor = null)
+  {
+    if (!empty($cursor) && $cursor instanceof \PDOStatement)
+    {
+      return $cursor->fetch(\PDO::FETCH_ASSOC);
+    }
 
-		if (!empty($cursor) && $cursor instanceof \PDOStatement)
-		{
-			$ret = $cursor->fetch(\PDO::FETCH_ASSOC);
-		}
-		elseif ($this->cursor instanceof \PDOStatement)
-		{
-			$ret = $this->cursor->fetch(\PDO::FETCH_ASSOC);
-		}
-
-		return $ret;
-	}
-
-	/**
-	 * Method to fetch a row from the result set cursor as an object.
-	 *
-	 * @param   mixed  $cursor The optional result set cursor from which to fetch the row.
-	 * @param   string $class  The class name to use for the returned row object.
-	 *
-	 * @return  mixed   Either the next row from the result set or false if there are no more rows.
-	 */
-	public function fetchObject($cursor = null, $class = 'stdClass')
-	{
-		$ret = null;
-
-		if (!empty($cursor) && $cursor instanceof \PDOStatement)
-		{
-			$ret =  $cursor->fetchObject($class);
-		}
-		elseif ($this->cursor instanceof \PDOStatement)
-		{
-			$ret = $this->cursor->fetchObject($class);
-		}
-
-		return $ret;
-	}
+    if ($this->prepared instanceof \PDOStatement)
+    {
+      return $this->prepared->fetch(\PDO::FETCH_ASSOC);
+    }
+  }
 
 	/**
 	 * Method to free up the memory used for the result set.
@@ -548,85 +456,18 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 	public function freeResult($cursor = null)
 	{
 		if ($cursor instanceof \PDOStatement)
-		{
-			$cursor->closeCursor();
-			$cursor = null;
-		}
+	  {
+	    $cursor->closeCursor();
+	     $cursor = null;
+	  }
 
-		if ($this->cursor instanceof \PDOStatement)
-		{
-			$this->cursor->closeCursor();
-			$this->cursor = null;
-		}
+	  if ($this->cursor instanceof \PDOStatement)
+	  {
+	    $this->cursor->closeCursor();
+	    $this->cursor = null;
+	  }
 	}
 
-	/**
-	 * Method to get the next row in the result set from the database query as an object.
-	 *
-	 * @param   string $class The class name to use for the returned row object.
-	 *
-	 * @return  mixed   The result of the query as an array, false if there are no more rows.
-	 */
-	public function loadNextObject($class = 'stdClass')
-	{
-		// Execute the query and get the result set cursor.
-		if (!$this->cursor)
-		{
-			if (!($this->execute()))
-			{
-				return $this->errorNum ? null : false;
-			}
-		}
-
-		// Get the next row from the result set as an object of type $class.
-		if ($row = $this->fetchObject(null, $class))
-		{
-			return $row;
-		}
-
-		// Free up system resources and return.
-		$this->freeResult();
-
-		return false;
-	}
-
-	/**
-	 * Method to get the next row in the result set from the database query as an array.
-	 *
-	 * @return  mixed  The result of the query as an array, false if there are no more rows.
-	 */
-	public function loadNextRow()
-	{
-		// Execute the query and get the result set cursor.
-		if (!$this->cursor)
-		{
-			if (!($this->execute()))
-			{
-				return $this->errorNum ? null : false;
-			}
-		}
-
-		// Get the next row from the result set as an object of type $class.
-		if ($row = $this->fetchArray())
-		{
-			return $row;
-		}
-
-		// Free up system resources and return.
-		$this->freeResult();
-
-		return false;
-	}
-
-	/**
-	 * Test to see if the PostgreSQL connector is available.
-	 *
-	 * @return  boolean  True on success, false otherwise.
-	 */
-	public static function isSupported()
-	{
-		return defined('PDO::ATTR_DRIVER_NAME');
-	}
 
 	/**
 	 * PDO does not support serialize
