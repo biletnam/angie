@@ -898,7 +898,7 @@ class ADatabaseDriverPostgresql extends ADatabaseDriver
 	 * @return  mixed  Either the next row from the result set or false if there are no more rows.
 	 *
 	 */
-	protected function fetchAssoc($cursor = null)
+	public function fetchAssoc($cursor = null)
 	{
 		return pg_fetch_assoc($cursor ? $cursor : $this->cursor);
 	}
