@@ -102,6 +102,8 @@ class ADatabaseRestorePostgresql extends ADatabaseRestore
 		$changeEncoding = false;
 		$useDelimiter = false;
 		$identityTable = null;
+		$sequenceName = '';
+		$idColName = '';
 
 		// CREATE TABLE query pre-processing
 		// If the table has a prefix, back it up (if requested). In any case, drop
@@ -318,23 +320,19 @@ class ADatabaseRestorePostgresql extends ADatabaseRestore
 				->where($db->qn('table_catalog') . ' = ' . $db->q($this->dbiniValues['dbname']))
 				->where($db->qn('column_default') . ' LIKE ' . $db->q('nextval(%::regclass)'));
 			$db->setQuery($q);
-			$idColumns = $db->loadAssocList();
+			$idColumn = $db->loadAssoc();
 
-			if (count($idColumns) >= 1)
+			if (count($idColumn) >= 1)
 			{
 				$identityTable = $tableName;
 
-				$identityColumns = array();
-				$newIdentityColumns = array();
+				$identityColumn = '';
+				$newIdentityColumn = '';
 
-				foreach ($idColumns as $col)
-				{
-					$identityColumns[] = $db->nq($col['column_name']);
-					$newIdentityColumns[] = 'NEW.' . $db->nq($col['column_name']);
-				}
-
-				$identityColumns = implode(',', $identityColumns);
-				$newIdentityColumns = implode(',', $newIdentityColumns);
+				$identityColumn = $db->nq($idColumn['column_name']);
+				$newIdentityColumn = 'NEW.' . $db->nq($idColumn['column_name']);
+				$sequenceName = $identityTable . '_' . $idColumn['column_name'] . '_seq';
+				$idColName = $idColumn['column_name'];
 			}
 		}
 		else
@@ -348,9 +346,8 @@ class ADatabaseRestorePostgresql extends ADatabaseRestore
 			if (!is_null($identityTable))
 			{
 				$sql = 'CREATE RULE "'.$identityTable.'_on_duplicate_ignore" AS ON INSERT TO "'.$identityTable.'" '
-					. 'WHERE EXISTS(SELECT 1 FROM "'.$identityTable.'" WHERE ('.$identityColumns.') '
-					. ' = ('.$newIdentityColumns.')) DO INSTEAD NOTHING;';
-
+					. 'WHERE EXISTS(SELECT 1 FROM "'.$identityTable.'" WHERE ('.$identityColumn.') '
+					. ' = ('.$newIdentityColumn.')) DO INSTEAD NOTHING;';
 				$this->execute($sql);
 			}
 
@@ -359,7 +356,19 @@ class ADatabaseRestorePostgresql extends ADatabaseRestore
 			if (!is_null($identityTable))
 			{
 				$sql = 'DROP RULE "'.$identityTable.'_on_duplicate_ignore" ON "'.$identityTable.'";';
+				$this->execute($sql);
 
+				$sql = 'SELECT * FROM "' . $identityTable.'" ORDER BY ' . $identityColumn . ' ASC;';
+				$result = $this->execute($sql);
+
+				$lastValue = 1;
+				while ($myRow = $db->fetchAssoc($result))
+				{
+					$lastValue = $myRow[$idColName];
+				}
+				$db->freeResult($result);
+
+				$sql = 'SELECT setval(\'' . $sequenceName . '\', ' . (string) $lastValue . ', true' . ')';
 				$this->execute($sql);
 			}
 
