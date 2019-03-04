@@ -51,8 +51,8 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 	public function __construct($options)
 	{
 		// Get some basic values from the options.
-		$options['host'] = (isset($options['host'])) ? $options['host'] : 'localhost';
-		$options['user'] = (isset($options['user'])) ? $options['user'] : 'root';
+		$options['host']     = (isset($options['host'])) ? $options['host'] : 'localhost';
+		$options['user']     = (isset($options['user'])) ? $options['user'] : 'root';
 		$options['password'] = (isset($options['password'])) ? $options['password'] : '';
 		$options['database'] = (isset($options['database'])) ? $options['database'] : '';
 		$options['port']     = isset($options['port']) ? $options['port'] : 5432;
@@ -146,16 +146,12 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 	 */
 	public function disconnect()
 	{
-		$return = false;
-
 		if (is_object($this->cursor))
 		{
 			$this->cursor->closeCursor();
 		}
 
 		$this->connection = null;
-
-		return $return;
 	}
 
 	/**
@@ -351,6 +347,7 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 					$val = 'FALSE';
 				}
 				break;
+
 			case 'bigint':
 			case 'bigserial':
 			case 'integer':
@@ -362,12 +359,18 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 			case 'numeric,':
 				$val = strlen($field_value) == 0 ? 'NULL' : $field_value;
 				break;
+
 			case 'date':
 			case 'timestamp without time zone':
 				if (empty($field_value))
 				{
 					$field_value = $this->getNullDate();
 				}
+
+				$val = $this->quote($field_value);
+
+				break;
+
 			default:
 				$val = $this->quote($field_value);
 				break;
@@ -425,26 +428,23 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 	}
 
 	/**
-  * Method to fetch a row from the result set cursor as an associative array.
-  *
-  * @param   mixed  $cursor  The optional result set cursor from which to fetch the row.
-  *
-  * @return  mixed  Either the next row from the result set or false if there are no more rows.
-  *
-  * @since   1.0
-  */
-  public function fetchAssoc($cursor = null)
-  {
-    if (!empty($cursor) && $cursor instanceof \PDOStatement)
-    {
-      return $cursor->fetch(\PDO::FETCH_ASSOC);
-    }
+	 * Method to fetch a row from the result set cursor as an associative array.
+	 *
+	 * @param   mixed $cursor The optional result set cursor from which to fetch the row.
+	 *
+	 * @return  mixed  Either the next row from the result set or false if there are no more rows.
+	 *
+	 * @since   1.0
+	 */
+	public function fetchAssoc($cursor = null)
+	{
+		if (!empty($cursor) && $cursor instanceof \PDOStatement)
+		{
+			return $cursor->fetch(\PDO::FETCH_ASSOC);
+		}
 
-    if ($this->prepared instanceof \PDOStatement)
-    {
-      return $this->prepared->fetch(\PDO::FETCH_ASSOC);
-    }
-  }
+		return false;
+	}
 
 	/**
 	 * Method to free up the memory used for the result set.
@@ -456,16 +456,16 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 	public function freeResult($cursor = null)
 	{
 		if ($cursor instanceof \PDOStatement)
-	  {
-	    $cursor->closeCursor();
-	     $cursor = null;
-	  }
+		{
+			$cursor->closeCursor();
+			$cursor = null;
+		}
 
-	  if ($this->cursor instanceof \PDOStatement)
-	  {
-	    $this->cursor->closeCursor();
-	    $this->cursor = null;
-	  }
+		if ($this->cursor instanceof \PDOStatement)
+		{
+			$this->cursor->closeCursor();
+			$this->cursor = null;
+		}
 	}
 
 
@@ -473,10 +473,12 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 	 * PDO does not support serialize
 	 *
 	 * @return  array
+	 *
+	 * @throws ReflectionException
 	 */
 	public function __sleep()
 	{
-		$serializedProperties = array();
+		$serializedProperties = [];
 
 		$reflect = new \ReflectionClass($this);
 
@@ -498,7 +500,7 @@ class ADatabaseDriverPgsql extends ADatabaseDriverPostgresql
 	/**
 	 * Wake up after serialization
 	 *
-	 * @return  array
+	 * @return  void
 	 */
 	public function __wakeup()
 	{
